@@ -1,0 +1,98 @@
+{
+  "name": "@nordicsemiconductor/asset-tracker-cloud-memfault-aws",
+  "version": "0.0.0-development",
+  "description": "Memfault integration for AWS IoT developed using AWS CDK in TypeScript.",
+  "type": "module",
+  "scripts": {
+    "postinstall": "husky install && check-node-version --package",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable",
+    "compile": "swc ./cdk -d dist",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --passWithNoTests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NordicSemiconductor/asset-tracker-cloud-memfault-aws-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NordicSemiconductor/asset-tracker-cloud-memfault-aws-js/issues"
+  },
+  "homepage": "https://github.com/NordicSemiconductor/asset-tracker-cloud-memfault-aws-js#readme",
+  "keywords": [
+    "nrf-asset-tracker",
+    "iot",
+    "memfault",
+    "aws",
+    "cdk"
+  ],
+  "author": "Nordic Semiconductor ASA | nordicsemi.no",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@aws-sdk/client-iot-data-plane": "3.53.0",
+    "@aws-sdk/client-sqs": "3.53.0",
+    "@aws-sdk/client-ssm": "3.53.0"
+  },
+  "devDependencies": {
+    "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.33",
+    "@nordicsemiconductor/object-to-env": "4.1.0",
+    "@swc/cli": "0.1.55",
+    "@swc/core": "1.2.151",
+    "@swc/jest": "0.2.20",
+    "@types/aws-lambda": "8.10.93",
+    "@types/jest": "27.4.1",
+    "@types/node": "17.0.18",
+    "aws-cdk-lib": "2.15.0",
+    "cdk": "2.15.0",
+    "chalk": "4.1.2",
+    "check-node-version": "4.2.1",
+    "constructs": "10.0.77",
+    "jest": "27.5.1"
+  },
+  "lint-staged": {
+    "*.{md,json,yaml,yml}": [
+      "prettier --write"
+    ],
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --ext .js,.ts"
+    ]
+  },
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "release": {
+    "branches": [
+      "saga"
+    ],
+    "remoteTags": true,
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github"
+    ]
+  },
+  "jest": {
+    "testRegex": ".+\\.spec\\.ts$",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/e2e-tests/"
+    ],
+    "moduleNameMapper": {
+      "^utils\\/(.*)\\.js$": "<rootDir>/src/utils/$1"
+    },
+    "transform": {
+      "^.+\\.(t|j)sx?$": "@swc/jest"
+    },
+    "extensionsToTreatAsEsm": [
+      ".ts",
+      ".tsx"
+    ],
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    }
+  },
+  "prettier": "@nordicsemiconductor/asset-tracker-cloud-code-style/.prettierrc"
+}
