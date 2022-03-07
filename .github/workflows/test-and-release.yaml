@@ -3,11 +3,6 @@ name: Test and Release
 on:
   push:
   workflow_dispatch:
-    inputs:
-      skipCleanup:
-        description: "Skip cleanup"
-        required: false
-        default: "no"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -20,7 +15,7 @@ env:
 
 jobs:
   unit-tests:
-    description: Unit tests
+    name: Unit tests
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
@@ -42,7 +37,7 @@ jobs:
         run: npm test
 
   e2e-tests:
-    description: End-to-end tests
+    name: End-to-end tests
     needs: unit-tests
     if: false
     timeout-minutes: 10
