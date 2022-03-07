@@ -43,7 +43,7 @@
     "@types/node": "17.0.18",
     "aws-cdk-lib": "2.15.0",
     "cdk": "2.15.0",
-    "chalk": "4.1.2",
+    "chalk": "5.0.0",
     "check-node-version": "4.2.1",
     "constructs": "10.0.77",
     "jest": "27.5.1"
