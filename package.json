@@ -43,7 +43,7 @@
     "aws-cdk-lib": "2.15.0",
     "cdk": "2.15.0",
     "check-node-version": "4.2.1",
-    "constructs": "10.0.81",
+    "constructs": "10.0.82",
     "jest": "27.5.1"
   },
   "lint-staged": {
