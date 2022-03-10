@@ -35,7 +35,7 @@
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.35",
     "@nordicsemiconductor/object-to-env": "4.1.0",
     "@swc/cli": "0.1.55",
-    "@swc/core": "1.2.151",
+    "@swc/core": "1.2.152",
     "@swc/jest": "0.2.20",
     "@types/aws-lambda": "8.10.93",
     "@types/jest": "27.4.1",
