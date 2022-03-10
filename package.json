@@ -4,7 +4,7 @@
   "description": "Memfault integration for AWS IoT developed using AWS CDK in TypeScript.",
   "type": "module",
   "scripts": {
-    "postinstall": "husky install && check-node-version --package",
+    "postinstall": "husky install && check-node-version --package && npm run compile",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable",
     "compile": "swc ./cdk -d dist",
@@ -29,6 +29,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@aws-sdk/client-iot-data-plane": "3.53.0",
+    "@aws-sdk/client-sqs": "3.53.0",
     "@aws-sdk/client-ssm": "3.53.0"
   },
   "devDependencies": {
@@ -40,11 +41,15 @@
     "@types/aws-lambda": "8.10.93",
     "@types/jest": "27.4.1",
     "@types/node": "17.0.21",
+    "@types/yazl": "2.4.2",
     "aws-cdk-lib": "2.15.0",
     "cdk": "2.15.0",
     "check-node-version": "4.2.1",
     "constructs": "10.0.83",
-    "jest": "27.5.1"
+    "esbuild": "0.14.25",
+    "jest": "27.5.1",
+    "regenerator-runtime": "0.13.9",
+    "yazl": "2.5.1"
   },
   "lint-staged": {
     "*.{md,json,yaml,yml}": [

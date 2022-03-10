@@ -13,7 +13,7 @@
     "jsx": "preserve",
     "noFallthroughCasesInSwitch": true,
     "importsNotUsedAsValues": "error",
-    "baseUrl": "cdk"
+    "baseUrl": "."
   },
-  "include": ["cdk"]
+  "include": ["cdk", "lambda"]
 }
