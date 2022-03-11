@@ -2,6 +2,7 @@ import { App, Duration, Stack } from 'aws-cdk-lib'
 import * as IAM from 'aws-cdk-lib/aws-iam'
 import * as IoT from 'aws-cdk-lib/aws-iot'
 import * as Lambda from 'aws-cdk-lib/aws-lambda'
+import type { PackedLayer } from 'cdk/packLayer.js'
 import type { PackedLambda } from '../packLambda.js'
 import { LambdaLogGroup } from '../resources/LambdaLogGroup.js'
 import { STACK_NAME } from './stackName.js'
@@ -11,14 +12,22 @@ export class MemfaultIntegrationStack extends Stack {
 		parent: App,
 		{
 			lambdaSources,
+			layer,
 		}: {
 			lambdaSources: {
 				publishChunks: PackedLambda
 				publishDeviceInfoHandler: PackedLambda
 			}
+			layer: PackedLayer
 		},
 	) {
 		super(parent, STACK_NAME)
+
+		const baseLayer = new Lambda.LayerVersion(this, 'baseLayer', {
+			code: Lambda.Code.fromAsset(layer.layerZipFile),
+			compatibleArchitectures: [Lambda.Architecture.ARM_64],
+			compatibleRuntimes: [Lambda.Runtime.NODEJS_14_X],
+		})
 
 		// Publish chunks
 
@@ -42,6 +51,7 @@ export class MemfaultIntegrationStack extends Stack {
 					],
 				}),
 			],
+			layers: [baseLayer],
 		})
 
 		new LambdaLogGroup(this, 'publishChunksLogs', publishChunks)
@@ -117,6 +127,7 @@ export class MemfaultIntegrationStack extends Stack {
 					],
 				}),
 			],
+			layers: [baseLayer],
 		})
 
 		new LambdaLogGroup(this, 'publishDeviceInfoLogs', publishDeviceInfo)

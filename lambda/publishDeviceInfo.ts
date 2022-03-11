@@ -1,5 +1,8 @@
+import { GetParametersByPathCommand, SSMClient } from '@aws-sdk/client-ssm'
 import type { IncomingMessage } from 'http'
 import https from 'https'
+
+const ssm = new SSMClient({})
 
 const updateMemfaultDeviceInfo =
 	({
@@ -48,8 +51,45 @@ const updateMemfaultDeviceInfo =
 	}
 
 const client = async () => {
-	// FIXME: fetch SSM parameters
-	return updateMemfaultDeviceInfo({} as any)
+	// FIXME: make SSM function re-usable
+	const Path = `${process.env.STACK_NAME}/thirdParty/memfault`
+	const { Parameters } = await ssm.send(
+		new GetParametersByPathCommand({
+			Path,
+			Recursive: true,
+		}),
+	)
+	if ((Parameters?.length ?? 0) === 0)
+		throw new Error(`System not configured: ${Path}!`)
+
+	const { authToken, endpoint, organization, project } = (Parameters ?? [])
+		.map(({ Name, ...rest }) => ({
+			...rest,
+			Name: Name?.replace(`${Path}/`, ''),
+		}))
+		.reduce(
+			(settings, { Name, Value }) => ({
+				...settings,
+				[Name ?? '']: Value ?? '',
+			}),
+			{} as Record<string, any>,
+		)
+
+	if (authToken === undefined)
+		throw new Error(`System is not configured: ${Path}/${authToken}!`)
+	if (endpoint === undefined)
+		throw new Error(`System is not configured: ${Path}/${endpoint}!`)
+	if (organization === undefined)
+		throw new Error(`System is not configured: ${Path}/${organization}!`)
+	if (project === undefined)
+		throw new Error(`System is not configured: ${Path}/${project}!`)
+
+	return updateMemfaultDeviceInfo({
+		authToken,
+		endpoint,
+		organization,
+		project,
+	})
 }
 
 export const handler = async ({

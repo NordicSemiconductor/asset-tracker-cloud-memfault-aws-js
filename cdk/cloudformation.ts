@@ -6,6 +6,7 @@ import chalk from 'chalk'
 import path from 'path'
 import { MemfaultIntegrationApp } from './MemfaultIntegrationApp.js'
 import { packLambda } from './packLambda.js'
+import { packLayer } from './packLayer.js'
 
 const pack = async (id: string) =>
 	packLambda({
@@ -45,6 +46,10 @@ new MemfaultIntegrationApp({
 		publishChunks: await pack('publishChunks'),
 		publishDeviceInfoHandler: await pack('publishDeviceInfo'),
 	},
+	layer: await packLayer({
+		id: 'baseLayer',
+		dependencies: ['@aws-sdk/client-ssm'],
+	}),
 	context: {
 		thingEvents,
 	},
