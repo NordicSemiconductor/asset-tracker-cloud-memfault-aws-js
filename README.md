@@ -10,3 +10,14 @@
 
 Memfault integration for AWS IoT developed using AWS CDK in
 [TypeScript](https://www.typescriptlang.org/).
+
+## Installation in your AWS account
+
+Provide your AWS credentials, for example using the `.envrc` (see
+[the example](./envrc.example)).
+
+    npm ci
+    npx cdk deploy
+
+Optionally, enable `THING` events for your AWS IoT Hub to automatically sync
+your devices' `name` attribute with the Memfault device `nickname` property.

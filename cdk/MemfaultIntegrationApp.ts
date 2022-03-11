@@ -5,14 +5,15 @@ import { MemfaultIntegrationStack } from './stacks/MemfaultIntegrationStack.js'
 export class MemfaultIntegrationApp extends App {
 	public constructor({
 		lambdaSources,
+		context,
 	}: {
 		lambdaSources: {
-			queueChunks: PackedLambda
 			publishChunks: PackedLambda
 			publishDeviceInfoHandler: PackedLambda
 		}
+		context?: Record<string, any>
 	}) {
-		super()
+		super({ context })
 		new MemfaultIntegrationStack(this, { lambdaSources })
 	}
 }

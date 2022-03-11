@@ -16,12 +16,10 @@ export const packLambda = async ({
 	const res = await esbuild.build({
 		entryPoints: [entry],
 		write: false,
-		target: 'node14',
 	})
 
 	const zipfile = new ZipFile()
 	zipfile.addBuffer(Buffer.from(res.outputFiles[0].contents), 'index.js')
-	/** 
 	zipfile.addBuffer(
 		Buffer.from(
 			JSON.stringify(
@@ -35,7 +33,6 @@ export const packLambda = async ({
 		),
 		'package.json',
 	)
-	*/
 
 	await mkdir(path.join(process.cwd(), 'dist', 'lambdas'), { recursive: true })
 
