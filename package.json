@@ -42,7 +42,7 @@
     "cdk": "2.15.0",
     "chalk": "5.0.1",
     "check-node-version": "4.2.1",
-    "constructs": "10.0.83",
+    "constructs": "10.0.84",
     "esbuild": "0.14.25",
     "glob": "7.2.0",
     "jest": "27.5.1",
