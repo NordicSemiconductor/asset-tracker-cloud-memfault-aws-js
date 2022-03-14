@@ -14,8 +14,9 @@ export const publishMemfaultChunks =
 	}: {
 		device: string
 		chunkBase64Encoded: string
-	}): Promise<void> =>
-		apiRequest(
+	}): Promise<void> => {
+		const payload = Buffer.from(chunkBase64Encoded, 'base64')
+		return apiRequest(
 			{
 				hostname: chunksEndpoint ?? 'chunks.memfault.com',
 				port: 443,
@@ -23,9 +24,10 @@ export const publishMemfaultChunks =
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/octet-stream',
-					'Content-Length': chunkBase64Encoded.length,
+					'Content-Length': payload.length,
 					'Memfault-Project-Key': projectKey,
 				},
 			},
-			chunkBase64Encoded,
+			payload,
 		)
+	}

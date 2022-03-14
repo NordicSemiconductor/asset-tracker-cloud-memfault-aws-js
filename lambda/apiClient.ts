@@ -4,7 +4,7 @@ import { request } from 'https'
 
 export const apiRequest = async (
 	options: RequestOptions,
-	payload: string,
+	payload: string | Buffer,
 ): Promise<void> => {
 	const { res, body } = await new Promise<{
 		res: IncomingMessage
