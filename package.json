@@ -43,7 +43,7 @@
     "chalk": "5.0.1",
     "check-node-version": "4.2.1",
     "constructs": "10.0.87",
-    "esbuild": "0.14.26",
+    "esbuild": "0.14.27",
     "glob": "7.2.0",
     "jest": "27.5.1",
     "regenerator-runtime": "0.13.9",
