@@ -29,6 +29,13 @@ export class MemfaultIntegrationStack extends Stack {
 			compatibleRuntimes: [Lambda.Runtime.NODEJS_14_X],
 		})
 
+		const readSSMParametersPermission = new IAM.PolicyStatement({
+			actions: ['ssm:GetParametersByPath'],
+			resources: [
+				`arn:aws:ssm:${this.region}:${this.account}:parameter/${this.stackName}/thirdParty/memfault`,
+			],
+		})
+
 		// Publish chunks
 
 		const publishChunks = new Lambda.Function(this, 'publishChunks', {
@@ -43,14 +50,7 @@ export class MemfaultIntegrationStack extends Stack {
 				VERSION: this.node.tryGetContext('version'),
 				STACK_NAME: this.stackName,
 			},
-			initialPolicy: [
-				new IAM.PolicyStatement({
-					actions: ['ssm:GetParametersByPath'],
-					resources: [
-						`arn:aws:ssm:${parent.region}:${parent.account}:parameter/${this.stackName}/thirdParty/memfault`,
-					],
-				}),
-			],
+			initialPolicy: [readSSMParametersPermission],
 			layers: [baseLayer],
 		})
 
@@ -64,7 +64,7 @@ export class MemfaultIntegrationStack extends Stack {
 						new IAM.PolicyStatement({
 							actions: ['iot:Publish'],
 							resources: [
-								`arn:aws:iot:${parent.region}:${parent.account}:topic/errors`,
+								`arn:aws:iot:${this.region}:${this.account}:topic/errors`,
 							],
 						}),
 					],
@@ -119,14 +119,7 @@ export class MemfaultIntegrationStack extends Stack {
 				VERSION: this.node.tryGetContext('version'),
 				STACK_NAME: this.stackName,
 			},
-			initialPolicy: [
-				new IAM.PolicyStatement({
-					actions: ['ssm:GetParametersByPath'],
-					resources: [
-						`arn:aws:ssm:${parent.region}:${parent.account}:parameter/${this.stackName}/thirdParty/memfault`,
-					],
-				}),
-			],
+			initialPolicy: [readSSMParametersPermission],
 			layers: [baseLayer],
 		})
 

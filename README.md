@@ -21,3 +21,17 @@ Provide your AWS credentials, for example using the `.envrc` (see
 
 Optionally, enable `THING` events for your AWS IoT Hub to automatically sync
 your devices' `name` attribute with the Memfault device `nickname` property.
+
+## Configure memfault settings
+
+You can retrieve the project settings from the settings page of the Memfault
+dashboard of your organization.
+
+    aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/projectKey --value <your memfault project key>
+    aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/project --value <your project slug>
+    aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/organization --value <your organization slug>
+
+The organization auth token can be accessed and managed by Administrators at
+Admin → Organization Auth Tokens in the Memfault UI.
+
+    aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/authToken --value <your auth token>

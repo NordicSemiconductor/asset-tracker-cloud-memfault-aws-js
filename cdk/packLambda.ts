@@ -9,9 +9,11 @@ export type PackedLambda = { lambdaZipFile: string }
 export const packLambda = async ({
 	id,
 	entry,
+	external,
 }: {
 	id: string
 	entry: string
+	external?: string[]
 }): Promise<PackedLambda> => {
 	/**
 	 * AWS Lambda does not yet support layers when using ESM.
@@ -22,6 +24,8 @@ export const packLambda = async ({
 		write: false,
 		target: 'node14',
 		format: 'cjs',
+		bundle: true,
+		external,
 	})
 
 	const zipfile = new ZipFile()

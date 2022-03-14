@@ -1,96 +1,22 @@
-import { GetParametersByPathCommand, SSMClient } from '@aws-sdk/client-ssm'
-import type { IncomingMessage } from 'http'
-import https from 'https'
+import { SSMClient } from '@aws-sdk/client-ssm'
+import { getConfigFromSSM } from './getConfigFromSSM.js'
+import { updateMemfaultDeviceInfo } from './updateMemfaultDeviceInfo.js'
 
+// Load configuration from SSM
+const stackName = process.env.STACK_NAME
 const ssm = new SSMClient({})
+const config = getConfigFromSSM({
+	ssm,
+	Path: `/${stackName}/thirdParty/memfault`,
+})({
+	authToken: true,
+	apiEndpoint: false,
+	organization: true,
+	project: true,
+})
 
-const updateMemfaultDeviceInfo =
-	({
-		endpoint,
-		organization,
-		authToken,
-		project,
-	}: {
-		endpoint: string
-		authToken: string
-		organization: string
-		project: string
-	}) =>
-	async ({
-		device,
-		update,
-	}: {
-		device: string
-		update: Partial<{
-			hardware_version: string // e.g. 'evt'
-			cohort: string // e.g. 'internal'
-			nickname: string // e.g. 'INTERNAL-1234'
-			description: string // e.g. 'Kitchen Smart Sink'
-		}>
-	}) => {
-		const payload = JSON.stringify(update)
-		const options = {
-			hostname: endpoint, // usually api.memfault.com
-			port: 443,
-			path: `/api/v0/organizations/${organization}/projects/${project}/devices/${device}`,
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-				'Content-Length': payload.length,
-				Authorization: `Basic ${Buffer.from(`:${authToken}`).toString(
-					'base64',
-				)}`,
-			},
-		}
-		return new Promise<IncomingMessage>((resolve, reject) => {
-			const req = https.request(options, resolve)
-			req.on('error', reject)
-			req.write(payload)
-			req.end()
-		})
-	}
-
-const client = async () => {
-	// FIXME: make SSM function re-usable
-	const Path = `${process.env.STACK_NAME}/thirdParty/memfault`
-	const { Parameters } = await ssm.send(
-		new GetParametersByPathCommand({
-			Path,
-			Recursive: true,
-		}),
-	)
-	if ((Parameters?.length ?? 0) === 0)
-		throw new Error(`System not configured: ${Path}!`)
-
-	const { authToken, endpoint, organization, project } = (Parameters ?? [])
-		.map(({ Name, ...rest }) => ({
-			...rest,
-			Name: Name?.replace(`${Path}/`, ''),
-		}))
-		.reduce(
-			(settings, { Name, Value }) => ({
-				...settings,
-				[Name ?? '']: Value ?? '',
-			}),
-			{} as Record<string, any>,
-		)
-
-	if (authToken === undefined)
-		throw new Error(`System is not configured: ${Path}/${authToken}!`)
-	if (endpoint === undefined)
-		throw new Error(`System is not configured: ${Path}/${endpoint}!`)
-	if (organization === undefined)
-		throw new Error(`System is not configured: ${Path}/${organization}!`)
-	if (project === undefined)
-		throw new Error(`System is not configured: ${Path}/${project}!`)
-
-	return updateMemfaultDeviceInfo({
-		authToken,
-		endpoint,
-		organization,
-		project,
-	})
-}
+// Prepare API client
+const client = async () => updateMemfaultDeviceInfo(await config)
 
 export const handler = async ({
 	hardware_version,

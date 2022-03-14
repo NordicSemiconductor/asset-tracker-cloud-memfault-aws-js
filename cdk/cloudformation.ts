@@ -8,10 +8,12 @@ import { MemfaultIntegrationApp } from './MemfaultIntegrationApp.js'
 import { packLambda } from './packLambda.js'
 import { packLayer } from './packLayer.js'
 
+const packagesInLayer = ['@aws-sdk/client-ssm']
 const pack = async (id: string) =>
 	packLambda({
 		id,
 		entry: path.join(process.cwd(), 'lambda', `${id}.ts`),
+		external: [...packagesInLayer, 'https', 'http'],
 	})
 
 const iot = new IoTClient({})
@@ -48,7 +50,7 @@ new MemfaultIntegrationApp({
 	},
 	layer: await packLayer({
 		id: 'baseLayer',
-		dependencies: ['@aws-sdk/client-ssm'],
+		dependencies: packagesInLayer,
 	}),
 	context: {
 		thingEvents,

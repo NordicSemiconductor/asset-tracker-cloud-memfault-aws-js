@@ -1,44 +1,20 @@
-import type { IncomingMessage } from 'http'
-import https from 'https'
+import { SSMClient } from '@aws-sdk/client-ssm'
+import { getConfigFromSSM } from './getConfigFromSSM.js'
+import { publishMemfaultChunks } from './publishMemfaultChunks.js'
 
-const publishMemfaultChunks =
-	({
-		endpoint,
-		memfaultProjectKey,
-	}: {
-		endpoint: string
-		memfaultProjectKey: string
-	}) =>
-	async ({
-		device,
-		chunkBase64Encoded,
-	}: {
-		device: string
-		chunkBase64Encoded: string
-	}) => {
-		const options = {
-			hostname: endpoint, // chunks.memfault.com
-			port: 443,
-			path: `/api/v0/chunks/${device}`,
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/octet-stream',
-				'Content-Length': chunkBase64Encoded.length,
-				'Memfault-Project-Key': memfaultProjectKey,
-			},
-		}
-		return new Promise<IncomingMessage>((resolve, reject) => {
-			const req = https.request(options, resolve)
-			req.on('error', reject)
-			req.write(chunkBase64Encoded)
-			req.end()
-		})
-	}
+// Load configuration from SSM
+const stackName = process.env.STACK_NAME
+const ssm = new SSMClient({})
+const config = getConfigFromSSM({
+	ssm,
+	Path: `/${stackName}/thirdParty/memfault`,
+})({
+	chunksEndpoint: false,
+	projectKey: true,
+})
 
-const client = async () => {
-	// FIXME: fetch SSM parameters
-	return publishMemfaultChunks({} as any)
-}
+// Prepare API client
+const client = async () => publishMemfaultChunks(await config)
 
 export const handler = async ({
 	deviceId,
@@ -50,9 +26,13 @@ export const handler = async ({
 	console.log(
 		JSON.stringify({
 			deviceId,
+			chunkLength: chunkBase64Encoded.length,
 			chunkBase64Encoded,
 		}),
 	)
+	if (chunkBase64Encoded.length === 0) {
+		throw new Error(`Chunk is empty.`)
+	}
 	const c = await client()
 	await c({
 		chunkBase64Encoded,
