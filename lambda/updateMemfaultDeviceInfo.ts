@@ -30,7 +30,7 @@ export const updateMemfaultDeviceInfo =
 				hostname: apiEndpoint ?? 'api.memfault.com',
 				port: 443,
 				path: `/api/v0/organizations/${organization}/projects/${project}/devices/${device}`,
-				method: 'POST',
+				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json; charset=utf-8',
 					'Content-Length': payload.length,

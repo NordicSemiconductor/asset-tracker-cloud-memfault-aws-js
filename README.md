@@ -28,8 +28,8 @@ You can retrieve the project settings from the settings page of the Memfault
 dashboard of your organization.
 
     aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/projectKey --value <your memfault project key>
-    aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/project --value <your project slug>
     aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/organization --value <your organization slug>
+    aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/project --value <your project slug>
 
 The organization auth token can be accessed and managed by Administrators at
 Admin → Organization Auth Tokens in the Memfault UI.
