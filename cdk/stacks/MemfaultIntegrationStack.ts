@@ -39,7 +39,7 @@ export class MemfaultIntegrationStack extends Stack {
 		// Publish chunks
 
 		const publishChunks = new Lambda.Function(this, 'publishChunks', {
-			handler: 'index.handler',
+			handler: lambdaSources.publishChunks.handler,
 			architecture: Lambda.Architecture.ARM_64,
 			runtime: Lambda.Runtime.NODEJS_14_X,
 			timeout: Duration.minutes(1),
@@ -106,7 +106,7 @@ export class MemfaultIntegrationStack extends Stack {
 		// Handle device updates
 
 		const publishDeviceInfo = new Lambda.Function(this, 'publishDeviceInfo', {
-			handler: 'index.handler',
+			handler: lambdaSources.publishDeviceInfoHandler.handler,
 			architecture: Lambda.Architecture.ARM_64,
 			runtime: Lambda.Runtime.NODEJS_14_X,
 			timeout: Duration.minutes(1),
