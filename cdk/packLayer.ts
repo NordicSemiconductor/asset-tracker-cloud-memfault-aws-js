@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 import { createWriteStream } from 'fs'
-import { copyFile, mkdir, readFile, stat, writeFile } from 'fs/promises'
+import { copyFile, mkdir, readFile, rm, writeFile } from 'fs/promises'
 import glob from 'glob'
 import path from 'path'
 import { promisify } from 'util'
@@ -26,10 +26,12 @@ export const packLayer = async ({
 	const nodejsDir = path.join(layerDir, 'nodejs')
 
 	try {
-		await stat(nodejsDir)
-	} catch (_) {
-		await mkdir(nodejsDir, { recursive: true })
+		await rm(layerDir, { recursive: true })
+	} catch {
+		// Folder does not exist.
 	}
+
+	await mkdir(nodejsDir, { recursive: true })
 
 	const depsToBeInstalled = dependencies.reduce((resolved, dep) => {
 		const resolvedDependency = deps[dep] ?? devDeps[dep]
