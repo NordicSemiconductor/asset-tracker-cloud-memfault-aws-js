@@ -26,7 +26,7 @@ jobs:
           node-version: "16.x"
 
       - name: Keep npm cache around to speed up installs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: build-${{ hashFiles('**/package-lock.json') }}
@@ -52,7 +52,7 @@ jobs:
 
       - name: Cache AWS CLI (Linux)
         id: cache-aws-cli
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: aws/
           key: cache-aws-cli
@@ -65,7 +65,7 @@ jobs:
           sudo ./aws/install --update
 
       - name: Keep npm cache around to speed up installs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: build-${{ hashFiles('**/package-lock.json') }}
@@ -115,7 +115,7 @@ jobs:
           node-version: "16.x"
 
       - name: Keep npm cache around to speed up installs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: build-${{ hashFiles('**/package-lock.json') }}
