@@ -29,7 +29,7 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@aws-sdk/client-iot": "3.56.0",
-    "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.45",
+    "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.46",
     "@nordicsemiconductor/object-to-env": "4.1.0",
     "@swc/cli": "0.1.56",
     "@swc/core": "1.2.160",
