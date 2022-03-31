@@ -4,8 +4,17 @@ import { request } from 'https'
 
 export const apiRequest = async (
 	options: RequestOptions,
-	payload: string | Buffer,
-): Promise<void> => {
+	payload?: string | Buffer,
+): Promise<{
+	res: IncomingMessage
+	body: string
+}> => {
+	const { method, path } = options
+	console.debug({
+		method,
+		path,
+		payload,
+	})
 	const { res, body } = await new Promise<{
 		res: IncomingMessage
 		body: string
@@ -20,7 +29,7 @@ export const apiRequest = async (
 			})
 		})
 		req.on('error', reject)
-		req.write(payload)
+		if (payload !== undefined) req.write(payload)
 		req.end()
 	})
 	console.debug(
@@ -30,4 +39,5 @@ export const apiRequest = async (
 			body,
 		}),
 	)
+	return { res, body }
 }

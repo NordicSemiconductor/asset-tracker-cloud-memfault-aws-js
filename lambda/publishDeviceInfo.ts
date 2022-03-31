@@ -1,4 +1,5 @@
 import { SSMClient } from '@aws-sdk/client-ssm'
+import { createMemfaultHardwareVersion } from './createMemfaultHardwareVersion.js'
 import { getConfigFromSSM } from './getConfigFromSSM.js'
 import { updateMemfaultDeviceInfo } from './updateMemfaultDeviceInfo.js'
 
@@ -16,7 +17,11 @@ const config = getConfigFromSSM({
 })
 
 // Prepare API client
-const client = async () => updateMemfaultDeviceInfo(await config)
+const deviceInfoPublisher = (async () =>
+	updateMemfaultDeviceInfo(await config))()
+
+const hardwareVersionCreator = (async () =>
+	createMemfaultHardwareVersion(await config))()
 
 export const handler = async ({
 	hardware_version,
@@ -34,12 +39,48 @@ export const handler = async ({
 			deviceId,
 		}),
 	)
-	const c = await client()
-	await c({
+	const c = await deviceInfoPublisher
+	const { res, body } = await c({
 		device: deviceId,
 		update: {
 			nickname,
 			hardware_version,
 		},
 	})
+
+	const statusCode = res.statusCode ?? 500
+	if (statusCode === 200) return // all fine.
+	if (
+		hardware_version !== undefined &&
+		(res.headers['content-type']?.includes('application/json') ?? false) &&
+		(res.headers['content-length'] ?? 0) > 0
+	) {
+		let errorInfo: Record<string, any> | undefined = undefined
+		try {
+			errorInfo = JSON.parse(body)
+		} catch {
+			// parsing failed
+			console.debug(`Failed to debug response body as JSON`, body)
+		}
+		if (
+			errorInfo?.error?.code === 1003 &&
+			/HardwareVersion with name `[^`]+` not found/.test(
+				errorInfo?.error?.message ?? '',
+			)
+		) {
+			// The hardware version we are trying to set needs to be created
+			const hc = await hardwareVersionCreator
+			await hc({
+				hardware_version,
+			})
+			// And send the update again
+			await c({
+				device: deviceId,
+				update: {
+					nickname,
+					hardware_version,
+				},
+			})
+		}
+	}
 }

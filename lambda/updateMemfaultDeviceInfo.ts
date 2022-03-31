@@ -23,9 +23,9 @@ export const updateMemfaultDeviceInfo =
 			nickname: string // e.g. 'INTERNAL-1234'
 			description: string // e.g. 'Kitchen Smart Sink'
 		}>
-	}): Promise<void> => {
+	}): Promise<ReturnType<typeof apiRequest>> => {
 		const payload = JSON.stringify(update)
-		await apiRequest(
+		return apiRequest(
 			{
 				hostname: apiEndpoint ?? 'api.memfault.com',
 				port: 443,

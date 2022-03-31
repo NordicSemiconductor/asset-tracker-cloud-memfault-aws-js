@@ -14,7 +14,7 @@ const config = getConfigFromSSM({
 })
 
 // Prepare API client
-const client = async () => publishMemfaultChunks(await config)
+const chunkPublisher = (async () => publishMemfaultChunks(await config))()
 
 export const handler = async ({
 	deviceId,
@@ -33,7 +33,7 @@ export const handler = async ({
 	if (chunkBase64Encoded.length === 0) {
 		throw new Error(`Chunk is empty.`)
 	}
-	const c = await client()
+	const c = await chunkPublisher
 	await c({
 		chunkBase64Encoded,
 		device: deviceId,

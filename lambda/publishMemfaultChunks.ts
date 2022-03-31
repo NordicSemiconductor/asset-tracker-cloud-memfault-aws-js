@@ -14,7 +14,7 @@ export const publishMemfaultChunks =
 	}: {
 		device: string
 		chunkBase64Encoded: string
-	}): Promise<void> => {
+	}): Promise<ReturnType<typeof apiRequest>> => {
 		const payload = Buffer.from(chunkBase64Encoded, 'base64')
 		return apiRequest(
 			{
