@@ -3,46 +3,32 @@ name: Test and Release
 on:
   push:
   workflow_dispatch:
+    inputs:
+      skipCleanup:
+        description: "Skip cleanup"
+        required: false
+        default: "no"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: eu-west-1
-  AWS_DEFAULT_REGION: eu-west-1
-  CI: 1
-  FORCE_COLOR: 3
 
 jobs:
-  unit-tests:
-    name: Unit tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16.x"
-
-      - name: Keep npm cache around to speed up installs
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: build-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install dependencies
-        run: npm ci --no-audit
-
-      - name: Run Unit Tests
-        run: npm test
-
   e2e-tests:
     name: End-to-end tests
-    needs: unit-tests
+
     runs-on: ubuntu-latest
-    if: false
+
     timeout-minutes: 10
+
+    environment:
+      name: ci
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: eu-west-1
+      AWS_DEFAULT_REGION: eu-west-1
+
     steps:
       - uses: actions/checkout@v3
 
@@ -73,38 +59,27 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit
 
-      - name: Compile source
-        run: npm run compile
-
       - name: Generate Stack ID
         run: |
           RANDOM_STRING=`node -e "const crypto = require('crypto'); process.stdout.write(crypto.randomBytes(Math.ceil(8 * 0.5)).toString('hex').slice(0, 8));"`
-          echo "STACK_NAME=nrf-asset-tracker-${RANDOM_STRING}" >> $GITHUB_ENV
+          echo "STACK_NAME=memfault-aws-${RANDOM_STRING}" >> $GITHUB_ENV
 
       - run: aws sts get-caller-identity
 
       - run: echo "VERSION=${{ github.sha }}" >> $GITHUB_ENV
 
-      - name: Set up stack for End-to-End tests
-        run: |
-          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/cloudformation-test.js' deploy '*' --require-approval never
-
-      - name: Run End-to-End Tests
-        run: npm run test:e2e
-
-      - name: Get logs
-        if: failure()
-        run: node cli logs
+      - name: Deploy stack
+        env:
+          IS_TEST: 1
+        run: npx cdk deploy --require-approval never
 
       - name: Clean up End-to-End test resources
         if: always()
-        run: |
-          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/cloudformation-test.js' destroy -f '*'
+        run: npx cdk destroy -f '*'
 
   release:
     needs:
-      # - e2e-tests
-      - unit-tests
+      - e2e-tests
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/saga'
     steps:
@@ -122,9 +97,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --no-audit
-
-      - name: Compile source
-        run: npx tsc
 
       - name: Semantic release
         run: npx semantic-release
