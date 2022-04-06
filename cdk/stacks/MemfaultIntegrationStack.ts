@@ -80,7 +80,9 @@ export class MemfaultIntegrationStack extends Stack {
 					description: `Invokes the lambda function which publishes the memfault chunks`,
 					ruleDisabled: false,
 					awsIotSqlVersion: '2016-03-23',
-					sql: `SELECT encode(*, 'base64') as chunkBase64Encoded, clientid() as deviceId FROM 'memfault'`,
+					sql: `SELECT encode(*, 'base64') as chunkBase64Encoded, clientid() as deviceId FROM '${
+						this.node.tryGetContext('memfaultTopic') ?? '+/memfault'
+					}'`,
 					actions: [
 						{
 							lambda: {

@@ -13,14 +13,25 @@ Memfault integration for AWS IoT developed using AWS CDK in
 
 ## Installation in your AWS account
 
+### Setup
+
 Provide your AWS credentials, for example using the `.envrc` (see
 [the example](./envrc.example)).
 
-    npm ci
-    npx cdk deploy
+Install `zip`.
 
-Optionally, enable `THING` events for your AWS IoT Hub to automatically sync
-your devices' `name` attribute with the Memfault device `nickname` property.
+Install the dependencies:
+
+    npm ci
+
+Optionally,
+[enable `THING` events](https://docs.aws.amazon.com/iot/latest/developerguide/iot-events.html#iot-events-enable)
+for your AWS IoT Hub to automatically sync your devices' `name` attribute with
+the Memfault device `nickname` property.
+
+### Deploy
+
+    npx cdk deploy
 
 ## Configure memfault settings
 
@@ -35,3 +46,9 @@ The organization auth token can be accessed and managed by Administrators at
 Admin → Organization Auth Tokens in the Memfault UI.
 
     aws ssm put-parameter --type String --name /${STACK_NAME:-nrf-memfault}/thirdParty/memfault/authToken --value <your auth token>
+
+## Configure stack settings
+
+The topic devices use to publish memfault chunks can be configured through the
+[CDK context variable](https://docs.aws.amazon.com/cdk/v2/guide/context.html)
+`memfaultTopic`. It defaults to `+/memfault`.
