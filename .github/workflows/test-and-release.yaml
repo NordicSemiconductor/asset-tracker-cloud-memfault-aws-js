@@ -11,7 +11,6 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  CI: 1
 
 jobs:
   e2e-tests:
@@ -45,7 +44,7 @@ jobs:
           key: cache-aws-cli
 
       - name: Install AWS
-        if: steps.cache-aws-cli-linux.outputs.cache-hit != 'true'
+        if: steps.cache-aws-cli.outputs.cache-hit != 'true'
         run: |
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip -q awscliv2.zip
