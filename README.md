@@ -11,6 +11,43 @@
 Memfault integration for AWS IoT developed using AWS CDK in
 [TypeScript](https://www.typescriptlang.org/).
 
+### Device information
+
+Meta information about devices is populated by cloud when devices report their
+values
+
+- board type
+  ([`hardware_version`](https://api-docs.memfault.com/#f2acc282-23f9-409b-a99b-41da759b82f9))
+  is inferred cloud side from
+  [`dev.v.brdV`](https://github.com/NordicSemiconductor/asset-tracker-cloud-docs/blob/84da0a8c790bb789dfbcf43050be4cb5f0e65171/docs/cloud-protocol/state.reported.schema.json#L139-L144)
+  Thing shadow property.
+- [`nickname`](https://api-docs.memfault.com/#f2acc282-23f9-409b-a99b-41da759b82f9)
+  is inferred from the user's name setting for the device using the `name` Thing
+  attribute.
+
+### Chunks
+
+The Memfault SDK
+[packages the data from all modules in _chunks_](https://docs.memfault.com/docs/mcu/data-from-firmware-to-the-cloud/).
+They are received via MQTT and forwared to the Memfault chunks API.
+
+Memfault embeds offset information in each chunk so they can re-assemble data
+that arrives out of order, so there is no need to buffer the chunks on the cloud
+side.
+
+Device publishes the chunks via MQTT to a configurable topic. Right now the
+`asset_tracker_v2` uses `<deviceId>/memfault`, however the `deviceId` is
+superfluous because it can be inferred on the cloud side from the MQTT
+connection.
+
+To support devices publishing to `memfault` directly, the memfault project key
+[needed for chunks API](https://api-docs.memfault.com/#a8d3e36f-62f0-4120-9fc6-544ee04f3bb5)
+is stored on the cloud side in an SSM parameter.
+
+This also allows for changing the project key on the fly if needed without
+needing deploy a new firmware to devices. However, note that the project key is
+not a secret and does not need rotation.
+
 ## Installation in your AWS account
 
 ### Setup
