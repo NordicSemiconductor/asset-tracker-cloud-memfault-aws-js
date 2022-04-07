@@ -81,7 +81,7 @@ export class MemfaultIntegrationStack extends Stack {
 					ruleDisabled: false,
 					awsIotSqlVersion: '2016-03-23',
 					sql: `SELECT encode(*, 'base64') as chunkBase64Encoded, clientid() as deviceId FROM '${
-						this.node.tryGetContext('memfaultTopic') ?? '+/memfault'
+						this.node.tryGetContext('memfaultTopic') ?? '+/memfault/#'
 					}'`,
 					actions: [
 						{

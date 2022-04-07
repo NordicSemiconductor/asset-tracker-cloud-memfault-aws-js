@@ -100,4 +100,4 @@ Admin → Organization Auth Tokens in the Memfault UI.
 
 The topic devices use to publish Memfault chunks can be configured through the
 [CDK context variable](https://docs.aws.amazon.com/cdk/v2/guide/context.html)
-`memfaultTopic`. It defaults to `+/memfault`.
+`memfaultTopic`. It defaults to `+/memfault/#`.
