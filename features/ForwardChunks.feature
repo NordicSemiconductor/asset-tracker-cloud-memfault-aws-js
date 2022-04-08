@@ -17,6 +17,8 @@ Feature: Forward Chunks
   Scenario: Submit a chunk
 
     When the device publishes this message to the topic {deviceId}/memfault/xlasfdplj987sadh5797azlpacy9og871
+    # A typical, base64 encoded message is
+    # CAKnAgEDAQpqbnJmOTFucy1mdwlsMC4wLjErODIxOWRlBmh0aGluZ3k5MQtGghneFTnxBKEBjxoAA60jAAAAABkLBQAaABGUABQAAAcAABnr9tXZ
       """
       <chunk data>
       """
