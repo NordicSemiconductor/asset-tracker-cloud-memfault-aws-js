@@ -27,7 +27,7 @@
   "author": "Nordic Semiconductor ASA | nordicsemi.no",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "@aws-sdk/client-iot": "3.87.0",
+    "@aws-sdk/client-iot": "3.90.0",
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.65",
     "@nordicsemiconductor/object-to-env": "4.1.1",
     "@swc/cli": "0.1.57",
