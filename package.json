@@ -43,7 +43,7 @@
     "constructs": "10.1.7",
     "dependency-tree": "8.1.2",
     "esbuild": "0.14.39",
-    "glob": "8.0.1",
+    "glob": "8.0.2",
     "regenerator-runtime": "0.13.9",
     "yazl": "2.5.1"
   },
