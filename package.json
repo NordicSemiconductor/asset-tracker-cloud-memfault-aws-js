@@ -7,7 +7,8 @@
     "postinstall": "husky install && check-node-version --package && npm run compile",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable",
-    "compile": "swc ./cdk -d dist"
+    "compile": "swc ./cdk -d dist",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -27,12 +28,16 @@
   "author": "Nordic Semiconductor ASA | nordicsemi.no",
   "license": "BSD-3-Clause",
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "3.92.0",
     "@aws-sdk/client-iot": "3.94.0",
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.69",
     "@nordicsemiconductor/object-to-env": "4.1.1",
     "@swc/cli": "0.1.57",
     "@swc/core": "1.2.186",
+    "@swc/jest": "0.2.21",
+    "@types/aws-lambda": "8.10.97",
     "@types/glob": "7.2.0",
+    "@types/jest": "27.5.1",
     "@types/node": "17.0.23",
     "@types/yazl": "2.4.2",
     "aws-cdk-lib": "2.24.1",
@@ -44,6 +49,7 @@
     "dependency-tree": "8.1.2",
     "esbuild": "0.14.39",
     "glob": "8.0.3",
+    "jest": "28.1.0",
     "regenerator-runtime": "0.13.9",
     "yazl": "2.5.1"
   },
@@ -74,5 +80,13 @@
   "prettier": "@nordicsemiconductor/asset-tracker-cloud-code-style/.prettierrc",
   "dependencies": {
     "@aws-sdk/client-ssm": "3.94.0"
+  },
+  "jest": {
+    "transform": {
+      ".+\\.(t|j)sx?$": [
+        "@swc/jest"
+      ]
+    },
+    "testRegex": ".+\\.spec\\.ts$"
   }
 }

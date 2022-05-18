@@ -16,6 +16,9 @@ jobs:
   e2e-tests:
     name: End-to-end tests
 
+    needs:
+      - unit-tests
+
     runs-on: ubuntu-latest
 
     timeout-minutes: 10
@@ -36,6 +39,21 @@ jobs:
         with:
           node-version: "16.x"
 
+      - name: Keep npm cache around to speed up installs
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: build-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
+      - name: Check TypeScript
+        run: npx tsc
+
+      - name: Run Unit Tests
+        run: npm test
+
       - name: Cache AWS CLI (Linux)
         id: cache-aws-cli
         uses: actions/cache@v3
@@ -50,15 +68,6 @@ jobs:
           unzip -q awscliv2.zip
           sudo ./aws/install --update
 
-      - name: Keep npm cache around to speed up installs
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: build-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install dependencies
-        run: npm ci --no-audit
-
       - name: Generate Stack ID
         run: |
           RANDOM_STRING=`node -e "const crypto = require('crypto'); process.stdout.write(crypto.randomBytes(Math.ceil(8 * 0.5)).toString('hex').slice(0, 8));"`
@@ -68,14 +77,34 @@ jobs:
 
       - run: echo "VERSION=${{ github.sha }}" >> $GITHUB_ENV
 
-      - name: Deploy stack
+      - name: Bootstrap AWS account for CDK
+        run: |
+          npx cdk bootstrap aws://`aws sts get-caller-identity | jq -r '.Account' | tr -d '\n'`/${{ env.AWS_REGION }}
+
+      - name: Deploy solution stack
         env:
           IS_TEST: 1
         run: npx cdk deploy --require-approval never
 
+      - name: Deploy test stack
+        run: |
+          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' deploy --require-approval never
+
+      - name: Set endpoint to mock API
+        run: |
+          MOCK_HTTP_API_ENDPOINT=`aws cloudformation describe-stacks --stack-name ${STACK_NAME}-mock-http-api | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "apiURL") | .OutputValue' | sed -E 's/\/$//g'`
+          echo $MOCK_HTTP_API_ENDPOINT
+
+      - name: Run End-to-End Tests
+        run: npm run test:e2e
+
       - name: Clean up End-to-End test resources
         if: always()
-        run: npx cdk destroy -f '*'
+        run: |
+          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' destroy -f
+
+      - name: Destroy solution stack
+        run: npx cdk destroy -f
 
   release:
     needs:
