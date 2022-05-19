@@ -27,9 +27,6 @@ jobs:
 
     timeout-minutes: 10
 
-    environment:
-      name: ci
-
     steps:
       - uses: actions/checkout@v3
 
