@@ -5,7 +5,7 @@ import * as IAM from 'aws-cdk-lib/aws-iam'
 import * as Lambda from 'aws-cdk-lib/aws-lambda'
 import type { PackedLambda } from '../packLambda.js'
 import type { PackedLayer } from '../packLayer.js'
-import { LambdaLogGroup } from '../resources/LambdaLogGroup'
+import { LambdaLogGroup } from '../resources/LambdaLogGroup.js'
 import { HTTP_MOCK_HTTP_API_STACK_NAME } from '../stacks/stackName.js'
 
 /**
