@@ -23,9 +23,6 @@ jobs:
   e2e-tests:
     name: End-to-end tests
 
-    needs:
-      - unit-tests
-
     runs-on: ubuntu-latest
 
     timeout-minutes: 10
@@ -117,8 +114,11 @@ jobs:
   release:
     needs:
       - e2e-tests
+
     runs-on: ubuntu-latest
+
     if: github.ref == 'refs/heads/saga'
+
     steps:
       - uses: actions/checkout@v3
 
