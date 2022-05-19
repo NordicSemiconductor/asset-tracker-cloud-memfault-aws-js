@@ -93,7 +93,7 @@ jobs:
 
       - name: Deploy test stack
         run: |
-          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' deploy --require-approval never
+          npx cdk -a 'node --unhandled-rejections=strict dist/test-resources.js' deploy --require-approval never
 
       - name: Set endpoint to mock API
         run: |
@@ -106,7 +106,7 @@ jobs:
       - name: Clean up End-to-End test resources
         if: always()
         run: |
-          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' destroy -f
+          npx cdk -a 'node --unhandled-rejections=strict dist/test-resources.js' destroy -f
 
       - name: Destroy solution stack
         run: npx cdk destroy -f
