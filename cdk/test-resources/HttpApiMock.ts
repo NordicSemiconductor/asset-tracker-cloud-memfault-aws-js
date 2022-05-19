@@ -1,19 +1,24 @@
-import * as CDK from 'aws-cdk-lib'
-import * as ApiGateway from 'aws-cdk-lib/aws-apigateway'
-import * as DynamoDB from 'aws-cdk-lib/aws-dynamodb'
-import * as IAM from 'aws-cdk-lib/aws-iam'
-import * as Lambda from 'aws-cdk-lib/aws-lambda'
+import {
+	aws_apigateway as ApiGateway,
+	aws_dynamodb as DynamoDB,
+	aws_iam as IAM,
+	aws_lambda as Lambda,
+	Duration,
+	RemovalPolicy,
+	Resource,
+} from 'aws-cdk-lib'
+import type { Construct } from 'constructs'
 import type { PackedLambda } from '../packLambda.js'
 import type { PackedLayer } from '../packLayer.js'
 import { LambdaLogGroup } from '../resources/LambdaLogGroup.js'
-import { HTTP_MOCK_HTTP_API_STACK_NAME } from '../stacks/stackName.js'
 
-/**
- * This is CloudFormation stack sets up a dummy HTTP API which stores all requests in SQS for inspection
- */
-export class HttpApiMockStack extends CDK.Stack {
+export class HttpApiMock extends Resource {
+	public readonly api: ApiGateway.RestApi
+	public readonly requestsTable: DynamoDB.ITable
+	public readonly responsesTable: DynamoDB.ITable
+
 	public constructor(
-		parent: CDK.App,
+		parent: Construct,
 		{
 			lambdaSources,
 			layer,
@@ -24,10 +29,10 @@ export class HttpApiMockStack extends CDK.Stack {
 			layer: PackedLayer
 		},
 	) {
-		super(parent, HTTP_MOCK_HTTP_API_STACK_NAME)
+		super(parent, 'http-api-mock')
 
 		// This table will store all the requests made to the API Gateway
-		const requestsTable = new DynamoDB.Table(this, 'requests', {
+		this.requestsTable = new DynamoDB.Table(this, 'requests', {
 			billingMode: DynamoDB.BillingMode.PAY_PER_REQUEST,
 			partitionKey: {
 				name: 'methodPathQuery',
@@ -38,19 +43,19 @@ export class HttpApiMockStack extends CDK.Stack {
 				type: DynamoDB.AttributeType.STRING,
 			},
 			pointInTimeRecovery: true,
-			removalPolicy: CDK.RemovalPolicy.DESTROY,
+			removalPolicy: RemovalPolicy.DESTROY,
 			timeToLiveAttribute: 'ttl',
 		})
 
 		// This table will store optional responses to be sent
-		const responsesTable = new DynamoDB.Table(this, 'responses', {
+		this.responsesTable = new DynamoDB.Table(this, 'responses', {
 			billingMode: DynamoDB.BillingMode.PAY_PER_REQUEST,
 			partitionKey: {
 				name: 'methodPathQuery',
 				type: DynamoDB.AttributeType.STRING,
 			},
 			pointInTimeRecovery: true,
-			removalPolicy: CDK.RemovalPolicy.DESTROY,
+			removalPolicy: RemovalPolicy.DESTROY,
 			timeToLiveAttribute: 'ttl',
 		})
 
@@ -66,52 +71,33 @@ export class HttpApiMockStack extends CDK.Stack {
 				'Mocks a HTTP API and stores all requests in SQS for inspection, and optionally replies with enqued responses',
 			code: Lambda.Code.fromAsset(lambdaSources.httpApiMock.lambdaZipFile),
 			layers: [baseLayer],
-			handler: 'index.handler',
+			handler: lambdaSources.httpApiMock.handler,
 			architecture: Lambda.Architecture.ARM_64,
 			runtime: Lambda.Runtime.NODEJS_16_X,
-			timeout: CDK.Duration.seconds(5),
+			timeout: Duration.seconds(5),
 			environment: {
-				REQUESTS_TABLE_NAME: requestsTable.tableName,
-				RESPONSES_TABLE_NAME: responsesTable.tableName,
+				REQUESTS_TABLE_NAME: this.requestsTable.tableName,
+				RESPONSES_TABLE_NAME: this.responsesTable.tableName,
 			},
 		})
-		responsesTable.grantReadWriteData(lambda)
-		requestsTable.grantReadWriteData(lambda)
+		this.responsesTable.grantReadWriteData(lambda)
+		this.requestsTable.grantReadWriteData(lambda)
 
 		// Create the log group here, so we can control the retention
 		new LambdaLogGroup(this, 'LambdaLogGroup', lambda)
 
 		// This is the API Gateway, AWS CDK automatically creates a prod stage and deployment
-		const api = new ApiGateway.RestApi(this, 'api', {
-			restApiName: `HTTP Mock API for testing ${this.stackName}`,
+		this.api = new ApiGateway.RestApi(this, 'api', {
+			restApiName: `HTTP Mock API for testing`,
 			description: 'API Gateway to test outgoing requests',
 			binaryMediaTypes: ['application/octet-stream'],
 		})
-		const proxyResource = api.root.addResource('{proxy+}')
+		const proxyResource = this.api.root.addResource('{proxy+}')
 		proxyResource.addMethod('ANY', new ApiGateway.LambdaIntegration(lambda))
 		// API Gateway needs to be able to call the lambda
 		lambda.addPermission('InvokeByApiGateway', {
 			principal: new IAM.ServicePrincipal('apigateway.amazonaws.com'),
-			sourceArn: api.arnForExecuteApi(),
-		})
-		// Export these so the test runner can use them
-		new CDK.CfnOutput(this, 'apiURL', {
-			value: api.url,
-			exportName: `${this.stackName}:apiURL`,
-		})
-		new CDK.CfnOutput(this, 'responsesTableName', {
-			value: responsesTable.tableName,
-			exportName: `${this.stackName}:responsesTableName`,
-		})
-		new CDK.CfnOutput(this, 'requestsTableName', {
-			value: requestsTable.tableName,
-			exportName: `${this.stackName}:requestsTableName`,
+			sourceArn: this.api.arnForExecuteApi(),
 		})
 	}
-}
-
-export type StackOutputs = {
-	apiURL: string
-	requestsTableName: string
-	responsesTableName: string
 }

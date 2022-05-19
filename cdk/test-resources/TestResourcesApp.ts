@@ -1,9 +1,9 @@
 import { App } from 'aws-cdk-lib'
 import type { PackedLambda } from '../packLambda.js'
 import type { PackedLayer } from '../packLayer.js'
-import { HttpApiMockStack } from './HttpApiMockStack.js'
+import { TestResourcesStack } from './TestResourcesStack.js'
 
-export class HttpApiMockApp extends App {
+export class TestResources extends App {
 	public constructor({
 		lambdaSources,
 		context,
@@ -16,6 +16,6 @@ export class HttpApiMockApp extends App {
 		context?: Record<string, any>
 	}) {
 		super({ context })
-		new HttpApiMockStack(this, { lambdaSources, layer })
+		new TestResourcesStack(this, { lambdaSources, layer })
 	}
 }

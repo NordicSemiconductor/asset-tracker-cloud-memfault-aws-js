@@ -15,5 +15,5 @@
     "importsNotUsedAsValues": "error",
     "baseUrl": "."
   },
-  "include": ["cdk", "lambda"]
+  "include": ["cdk", "lambda", "feature-runner"]
 }

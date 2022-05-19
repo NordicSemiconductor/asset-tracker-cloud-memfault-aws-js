@@ -1,7 +1,11 @@
-import { App, Duration, Stack } from 'aws-cdk-lib'
-import * as IAM from 'aws-cdk-lib/aws-iam'
-import * as IoT from 'aws-cdk-lib/aws-iot'
-import * as Lambda from 'aws-cdk-lib/aws-lambda'
+import {
+	App,
+	aws_iam as IAM,
+	aws_iot as IoT,
+	aws_lambda as Lambda,
+	Duration,
+	Stack,
+} from 'aws-cdk-lib'
 import type { PackedLambda } from '../packLambda.js'
 import type { PackedLayer } from '../packLayer.js'
 import { LambdaLogGroup } from '../resources/LambdaLogGroup.js'

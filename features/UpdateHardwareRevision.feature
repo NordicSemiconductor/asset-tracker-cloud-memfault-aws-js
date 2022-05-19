@@ -8,7 +8,7 @@ Feature: Update Hardware Revisions
     Given I connect a device
     # Prepare the mock API responses.
     # First attempt should fail (the hardware version is not yet known)
-    And I enqueue this mock HTTP API response with status code 404 for a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/my-device
+    And I enqueue this mock HTTP API response with status code 404 for a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/{deviceId}
     """
     Content-Type: application/json
 
@@ -110,7 +110,7 @@ Feature: Update Hardware Revisions
     }
     """
     # Second attempt should pass
-    And I enqueue this mock HTTP API response with status code 202 for a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/my-device
+    And I enqueue this mock HTTP API response with status code 202 for a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/{deviceId}
     """
     Content-Type: application/json
 
@@ -123,7 +123,7 @@ Feature: Update Hardware Revisions
         "debugging_manual_resolution": null,
         "debugging_resolution": "normal",
         "description": "",
-        "device_serial": "my-device",
+        "device_serial": "{deviceId}",
         "hardware_version": { "name": "nrf9160dk_nrf9160-v42" },
         "id": 3848748,
         "last_seen": "2022-04-08T13:07:30.016000+00:00",
@@ -146,21 +146,19 @@ Feature: Update Hardware Revisions
     }
     """
 
-  Scenario: Update the Thing shadow attribute of the device
+  Scenario: Update the Thing shadow of the device
 
-    Given I update the Thing shadow attribute to
+    Given I update the Thing reported shadow to
     """
     {
-      reported: {
-        dev: {
-          v: {
-            brdV: "nrf9160dk_nrf9160-v42"
-          }
+      "dev": {
+        "v": {
+          "brdV": "nrf9160dk_nrf9160-v42"
         }
       }
     }
     """
-    Then the mock HTTP API should have been called with a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/my-device
+    Then the mock HTTP API should have been called with a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/{deviceId}
     """
     Content-Type: application/json; charset=utf-8
     
@@ -173,7 +171,7 @@ Feature: Update Hardware Revisions
           
     {"name":"nrf9160dk_nrf9160-v42","primary_software_type":"0.0.0-development-48b1d466fb320151a2c7a2005e58c2cfa74974d2-thingy91_nrf9160_ns-debugWithMemfault"}
     """
-    Then the mock HTTP API should have been called with a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/my-device
+    Then the mock HTTP API should have been called with a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/{deviceId}
     """
     Content-Type: application/json; charset=utf-8
     

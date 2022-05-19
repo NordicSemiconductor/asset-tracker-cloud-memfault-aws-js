@@ -25,11 +25,13 @@ export const updateMemfaultDeviceInfo =
 		}>
 	}): Promise<ReturnType<typeof apiRequest>> => {
 		const payload = JSON.stringify(update)
+		const endpoint = new URL(apiEndpoint ?? 'https://api.memfault.com')
+		const base = (endpoint.pathname ?? '').replace(/\+$/, '')
 		return apiRequest(
 			{
-				hostname: apiEndpoint ?? 'api.memfault.com',
+				hostname: endpoint.hostname,
 				port: 443,
-				path: `/api/v0/organizations/${organization}/projects/${project}/devices/${device}`,
+				path: `${base}/api/v0/organizations/${organization}/projects/${project}/devices/${device}`,
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json; charset=utf-8',

@@ -17,10 +17,12 @@ export const createMemfaultHardwareVersion =
 	}: {
 		hardware_version: string
 	}): Promise<ReturnType<typeof apiRequest>> => {
+		const endpoint = new URL(apiEndpoint ?? 'https://api.memfault.com')
+		const base = (endpoint.pathname ?? '').replace(/\+$/, '')
 		const { body } = await apiRequest({
-			hostname: apiEndpoint ?? 'api.memfault.com',
+			hostname: endpoint.hostname,
 			port: 443,
-			path: `/api/v0/organizations/${organization}/projects/${project}/software_types?page=1&per_page=5000`,
+			path: `${base}/api/v0/organizations/${organization}/projects/${project}/software_types?page=1&per_page=5000`,
 			method: 'GET',
 			headers: {
 				Authorization: `Basic ${Buffer.from(`:${authToken}`).toString(

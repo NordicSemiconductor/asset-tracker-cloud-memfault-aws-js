@@ -84,18 +84,28 @@ jobs:
           npx cdk bootstrap aws://`aws sts get-caller-identity | jq -r '.Account' | tr -d '\n'`/${{ env.AWS_REGION }}
 
       - name: Deploy solution stack
-        env:
-          IS_TEST: 1
         run: npx cdk deploy --require-approval never
+
+      - name: Configure Memfault SSM parameters
+        run: |
+          aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/projectKey --value my-projectKey
+          aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/organization --value my-org
+          aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/project --value my-project
+          aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/authToken --value my-authToken
 
       - name: Deploy test stack
         run: |
-          npx cdk -a 'node --unhandled-rejections=strict dist/test-resources.js' deploy --require-approval never
+          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' deploy --require-approval never
 
       - name: Set endpoint to mock API
         run: |
-          MOCK_HTTP_API_ENDPOINT=`aws cloudformation describe-stacks --stack-name ${STACK_NAME}-mock-http-api | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "apiURL") | .OutputValue' | sed -E 's/\/$//g'`
+          mkdir ~/.aws
+          # Disable URL lookups
+          echo "[default]\ncli_follow_urlparam = false" > ~/.aws/config
+          MOCK_HTTP_API_ENDPOINT=`aws cloudformation describe-stacks --stack-name ${STACK_NAME}-test | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "apiURL") | .OutputValue' | sed -E 's/\/$//g'`
           echo $MOCK_HTTP_API_ENDPOINT
+          aws ssm put-parameter  --type String --name /${STACK_NAME}/thirdParty/memfault/apiEndpoint --value $MOCK_HTTP_API_ENDPOINT/api.memfault.com
+          aws ssm put-parameter  --type String --name /${STACK_NAME}/thirdParty/memfault/chunksEndpoint --value $MOCK_HTTP_API_ENDPOINT/chunks.memfault.com
 
       - name: Run End-to-End Tests
         run: npm run test:e2e
@@ -103,7 +113,7 @@ jobs:
       - name: Clean up End-to-End test resources
         if: always()
         run: |
-          npx cdk -a 'node --unhandled-rejections=strict dist/test-resources.js' destroy -f
+          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' destroy -f
 
       - name: Destroy solution stack
         run: npx cdk destroy -f

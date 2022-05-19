@@ -7,7 +7,7 @@ Feature: Update Nickname
 
     Given I connect a device
     # Prepare the mock API responses.
-    And I enqueue this mock HTTP API response with status code 202 for a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/my-device
+    And I enqueue this mock HTTP API response with status code 202 for a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/{deviceId}
     """
     Content-Type: application/json
 
@@ -20,7 +20,7 @@ Feature: Update Nickname
         "debugging_manual_resolution": null,
         "debugging_resolution": "normal",
         "description": "",
-        "device_serial": "my-device",
+        "device_serial": "{deviceId}",
         "hardware_version": { "name": "nrf9160dk_nrf9160" },
         "id": 3848748,
         "last_seen": "2022-04-08T13:07:30.016000+00:00",
@@ -46,7 +46,7 @@ Feature: Update Nickname
   Scenario: Update the Thing name attribute of the device
 
     Given I update the Thing attribute "name" to "My-Device"
-    Then the mock HTTP API should have been called with a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/my-device
+    Then the mock HTTP API should have been called with a PATCH request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/devices/{deviceId}
       """
       Content-Type: application/json; charset=utf-8
       
