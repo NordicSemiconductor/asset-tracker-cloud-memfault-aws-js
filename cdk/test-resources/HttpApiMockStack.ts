@@ -3,10 +3,10 @@ import * as ApiGateway from 'aws-cdk-lib/aws-apigateway'
 import * as DynamoDB from 'aws-cdk-lib/aws-dynamodb'
 import * as IAM from 'aws-cdk-lib/aws-iam'
 import * as Lambda from 'aws-cdk-lib/aws-lambda'
-import type { PackedLayer } from 'cdk/packLayer.js'
-import { HTTP_MOCK_HTTP_API_STACK_NAME } from 'cdk/stacks/stackName.js'
 import type { PackedLambda } from '../packLambda.js'
+import type { PackedLayer } from '../packLayer.js'
 import { LambdaLogGroup } from '../resources/LambdaLogGroup'
+import { HTTP_MOCK_HTTP_API_STACK_NAME } from '../stacks/stackName.js'
 
 /**
  * This is CloudFormation stack sets up a dummy HTTP API which stores all requests in SQS for inspection
