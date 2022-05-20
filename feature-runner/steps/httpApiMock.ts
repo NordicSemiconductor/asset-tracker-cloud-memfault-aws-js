@@ -25,12 +25,10 @@ export const httpApiMockStepRunners = ({
 ) => StepRunnerFunc<MemfaultIntegrationWorld> | false)[] => [
 	regexGroupMatcher<MemfaultIntegrationWorld>(
 		/^I enqueue this mock HTTP API response with status code (?<statusCode>[0-9]+) for a (?<method>[A-Z]+) request to (?<path>.+)$/,
-	)(async ({ statusCode, method, path }, step, runner, feature) => {
+	)(async ({ statusCode, method, path }, step, runner) => {
 		if (step.interpolatedArgument === undefined) {
 			throw new Error('Must provide argument!')
 		}
-		// FIXME: isolate requests based on the feature
-		console.log(feature)
 		await db.send(
 			new PutItemCommand({
 				TableName: runner.world['httpApiMock:responsesTableName'],
