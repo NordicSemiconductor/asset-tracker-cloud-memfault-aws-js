@@ -39,7 +39,7 @@ export class HttpApiMock extends Resource {
 				type: DynamoDB.AttributeType.STRING,
 			},
 			sortKey: {
-				name: 'requestId',
+				name: 'timestamp',
 				type: DynamoDB.AttributeType.STRING,
 			},
 			pointInTimeRecovery: true,
@@ -52,6 +52,10 @@ export class HttpApiMock extends Resource {
 			billingMode: DynamoDB.BillingMode.PAY_PER_REQUEST,
 			partitionKey: {
 				name: 'methodPathQuery',
+				type: DynamoDB.AttributeType.STRING,
+			},
+			sortKey: {
+				name: 'timestamp',
 				type: DynamoDB.AttributeType.STRING,
 			},
 			pointInTimeRecovery: true,

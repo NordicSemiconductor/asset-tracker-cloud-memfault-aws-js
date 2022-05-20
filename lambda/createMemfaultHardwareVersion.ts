@@ -71,9 +71,9 @@ export const createMemfaultHardwareVersion =
 			})
 			return apiRequest(
 				{
-					hostname: apiEndpoint ?? 'api.memfault.com',
+					hostname: endpoint.hostname,
 					port: 443,
-					path: `/api/v0/organizations/${organization}/projects/${project}/hardware_versions`,
+					path: `${base}/api/v0/organizations/${organization}/projects/${project}/hardware_versions`,
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json; charset=utf-8',

@@ -1,18 +1,22 @@
 export const splitMockResponse = (
 	r: string,
 ): { headers: Record<string, string>; body: string } => {
-	const blankLineLocation = r.indexOf('\n\n')
+	const trimmedLines = r
+		.split('\n')
+		.map((s) => s.trim())
+		.join('\n')
+	const blankLineLocation = trimmedLines.indexOf('\n\n')
 	if (blankLineLocation === -1)
 		return {
 			headers: {},
-			body: r,
+			body: trimmedLines,
 		}
 	return {
-		headers: r
+		headers: trimmedLines
 			.slice(0, blankLineLocation)
 			.split('\n')
 			.map((s) => s.split(':', 2))
 			.reduce((headers, [k, v]) => ({ ...headers, [k]: v.trim() }), {}),
-		body: r.slice(blankLineLocation + 2),
+		body: trimmedLines.slice(blankLineLocation + 2),
 	}
 }

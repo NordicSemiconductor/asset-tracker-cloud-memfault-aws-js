@@ -25,16 +25,21 @@ export const httpApiMockStepRunners = ({
 ) => StepRunnerFunc<MemfaultIntegrationWorld> | false)[] => [
 	regexGroupMatcher<MemfaultIntegrationWorld>(
 		/^I enqueue this mock HTTP API response with status code (?<statusCode>[0-9]+) for a (?<method>[A-Z]+) request to (?<path>.+)$/,
-	)(async ({ statusCode, method, path }, step, runner) => {
+	)(async ({ statusCode, method, path }, step, runner, feature) => {
 		if (step.interpolatedArgument === undefined) {
 			throw new Error('Must provide argument!')
 		}
+		// FIXME: isolate requests based on the feature
+		console.log(feature)
 		await db.send(
 			new PutItemCommand({
 				TableName: runner.world['httpApiMock:responsesTableName'],
 				Item: {
 					methodPathQuery: {
 						S: `${method} ${path}`,
+					},
+					timestamp: {
+						S: new Date().toISOString(),
 					},
 					statusCode: {
 						N: statusCode,
@@ -57,7 +62,10 @@ export const httpApiMockStepRunners = ({
 		let isBinaryBody = false
 		if (step.interpolatedArgument !== undefined) {
 			const { body, headers } = splitMockResponse(step.interpolatedArgument)
-			if (headers['Content-Type'].startsWith('application/octet-stream')) {
+			if (
+				headers['Content-Type']?.startsWith('application/octet-stream') ??
+				false
+			) {
 				isBinaryBody = true
 				expectedBody = body
 			} else {
@@ -75,7 +83,10 @@ export const httpApiMockStepRunners = ({
 						S: `${method} ${path}`,
 					},
 				},
-				ProjectionExpression: 'methodPathQuery,requestId,body,headers',
+				ExpressionAttributeNames: {
+					'#timestamp': 'timestamp',
+				},
+				ProjectionExpression: 'methodPathQuery,body,#timestamp,headers',
 				Limit: 1000,
 			}),
 		)
@@ -102,7 +113,7 @@ export const httpApiMockStepRunners = ({
 						TableName: runner.world['httpApiMock:requestsTableName'],
 						Key: {
 							methodPathQuery: request.methodPathQuery,
-							requestId: request.requestId,
+							timestamp: request.timestamp,
 						},
 					}),
 				)

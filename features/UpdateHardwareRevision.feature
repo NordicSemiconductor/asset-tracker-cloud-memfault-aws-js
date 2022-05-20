@@ -22,7 +22,7 @@ Feature: Update Hardware Revisions
     }
     """
     # List software version
-    And I enqueue this mock HTTP API response with status code 200 for a GET request to api.memfault.com/api/v0/organizations/nordic-semiconductor-asafbpk/projects/my-project/software_types?page=1&per_page=5000
+    And I enqueue this mock HTTP API response with status code 200 for a GET request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/software_types?page=1&per_page=5000
     """
     Content-Type: application/json
 
@@ -83,7 +83,7 @@ Feature: Update Hardware Revisions
     }
     """
     # Create hardware version
-    And I enqueue this mock HTTP API response with status code 200 for a POST request to api.memfault.com/api/v0/organizations/nordic-semiconductor-asafbpk/projects/my-project/hardware_versions
+    And I enqueue this mock HTTP API response with status code 200 for a POST request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/hardware_versions
     """
     Content-Type: application/json
 
@@ -164,8 +164,8 @@ Feature: Update Hardware Revisions
     
     {"hardware_version":"nrf9160dk_nrf9160-v42"}
     """
-    And the mock HTTP API should have been called with a GET request to api.memfault.com/api/v0/organizations/nordic-semiconductor-asafbpk/projects/my-project/software_types?page=1&per_page=5000
-    And the mock HTTP API should have been called with a POST request to api.memfault.com/api/v0/organizations/nordic-semiconductor-asafbpk/projects/my-project/hardware_versions
+    And the mock HTTP API should have been called with a GET request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/software_types?page=1&per_page=5000
+    And the mock HTTP API should have been called with a POST request to api.memfault.com/api/v0/organizations/my-org/projects/my-project/hardware_versions
     """
     Content-Type: application/json; charset=utf-8
           

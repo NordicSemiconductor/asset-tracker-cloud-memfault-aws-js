@@ -1,8 +1,8 @@
 import {
 	DeleteItemCommand,
 	DynamoDBClient,
-	GetItemCommand,
 	PutItemCommand,
+	QueryCommand,
 } from '@aws-sdk/client-dynamodb'
 import type {
 	APIGatewayEvent,
@@ -18,8 +18,6 @@ export const handler = async (
 	event: APIGatewayEvent,
 	context: Context,
 ): Promise<APIGatewayProxyResult> => {
-	console.log(JSON.stringify(event))
-
 	const pathWithQuery = `${event.path.replace(/^\//, '')}${
 		event.queryStringParameters !== null &&
 		event.queryStringParameters !== undefined
@@ -35,6 +33,9 @@ export const handler = async (
 			Item: {
 				methodPathQuery: {
 					S: `${event.httpMethod} ${pathWithQuery}`,
+				},
+				timestamp: {
+					S: new Date().toISOString(),
 				},
 				requestId: {
 					S: context.awsRequestId,
@@ -62,25 +63,27 @@ export const handler = async (
 	console.log(
 		`Checking if response exists for ${event.httpMethod} ${pathWithQuery}...`,
 	)
-	const { Item } = await db.send(
-		new GetItemCommand({
+	const { Items } = await db.send(
+		new QueryCommand({
 			TableName: process.env.RESPONSES_TABLE_NAME,
-			Key: {
-				methodPathQuery: {
+			KeyConditionExpression: 'methodPathQuery = :methodPathQuery',
+			ExpressionAttributeValues: {
+				[':methodPathQuery']: {
 					S: `${event.httpMethod} ${pathWithQuery}`,
 				},
 			},
+			Limit: 1,
 		}),
 	)
-	if (Item !== undefined) {
+	if (Items !== undefined && (Items?.length ?? 0) > 0) {
+		const Item = Items[0]
 		console.log(JSON.stringify(Item))
 		await db.send(
 			new DeleteItemCommand({
 				TableName: process.env.RESPONSES_TABLE_NAME,
 				Key: {
-					methodPathQuery: {
-						S: `${event.httpMethod} ${pathWithQuery}`,
-					},
+					methodPathQuery: Item.methodPathQuery,
+					timestamp: Item.timestamp,
 				},
 			}),
 		)
