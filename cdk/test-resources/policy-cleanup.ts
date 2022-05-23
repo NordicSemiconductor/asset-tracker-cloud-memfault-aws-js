@@ -101,7 +101,7 @@ export const handler = async (
 				)
 				for await (const { policies } of policyPaginator) {
 					for (const policy of policies ?? []) {
-						console.debug(`Deleting policy ${policy}`)
+						console.debug(`Deleting policy ${policy.policyName}`)
 						await iot.send(
 							new DetachPolicyCommand({
 								policyName: policy.policyName,
