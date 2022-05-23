@@ -1,5 +1,8 @@
 name: Test and Release
 
+permissions:
+  id-token: write
+
 on:
   push:
   workflow_dispatch:
