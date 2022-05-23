@@ -93,10 +93,6 @@ jobs:
           aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/project --value my-project
           aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/authToken --value my-authToken
 
-      - name: Deploy test stack
-        run: |
-          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' deploy --require-approval never
-
       - name: Set endpoint to mock API
         run: |
           mkdir ~/.aws
@@ -106,6 +102,10 @@ jobs:
           echo $MOCK_HTTP_API_ENDPOINT
           aws ssm put-parameter  --type String --name /${STACK_NAME}/thirdParty/memfault/apiEndpoint --value $MOCK_HTTP_API_ENDPOINT/api.memfault.com
           aws ssm put-parameter  --type String --name /${STACK_NAME}/thirdParty/memfault/chunksEndpoint --value $MOCK_HTTP_API_ENDPOINT/chunks.memfault.com
+
+      - name: Deploy test stack
+        run: |
+          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' deploy --require-approval never
 
       - name: Run End-to-End Tests
         run: npm run test:e2e
