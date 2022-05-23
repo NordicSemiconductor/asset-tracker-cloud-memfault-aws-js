@@ -2,6 +2,7 @@ name: Test and Release
 
 permissions:
   id-token: write
+  contents: write
 
 on:
   push:
