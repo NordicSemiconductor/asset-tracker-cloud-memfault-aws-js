@@ -16,7 +16,7 @@ new TestResources({
 		policyCleanup: await pack('policy-cleanup'),
 	},
 	layer: await packLayer({
-		id: 'httpApiMockLayer',
+		id: 'testResources',
 		dependencies: [
 			'@aws-sdk/client-dynamodb',
 			'@aws-sdk/client-iot',
