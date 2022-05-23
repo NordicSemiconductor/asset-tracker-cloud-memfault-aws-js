@@ -116,6 +116,7 @@ jobs:
           npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' destroy -f
 
       - name: Destroy solution stack
+        if: always()
         run: npx cdk destroy -f
 
   release:
