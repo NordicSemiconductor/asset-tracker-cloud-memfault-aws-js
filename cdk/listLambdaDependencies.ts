@@ -7,5 +7,4 @@ export const listLambdaDependencies = (entryFile: string): string[] =>
 		directory: process.cwd(),
 		tsConfig: path.join(process.cwd(), 'tsconfig.json'),
 		filter: (path) => !path.includes('node_modules'), // do not include node_modules
-		noTypeDefinitions: true,
 	})

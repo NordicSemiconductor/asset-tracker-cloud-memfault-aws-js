@@ -1,9 +1,13 @@
-import { App, Duration, Stack } from 'aws-cdk-lib'
-import * as IAM from 'aws-cdk-lib/aws-iam'
-import * as IoT from 'aws-cdk-lib/aws-iot'
-import * as Lambda from 'aws-cdk-lib/aws-lambda'
-import type { PackedLayer } from 'cdk/packLayer.js'
+import {
+	App,
+	aws_iam as IAM,
+	aws_iot as IoT,
+	aws_lambda as Lambda,
+	Duration,
+	Stack,
+} from 'aws-cdk-lib'
 import type { PackedLambda } from '../packLambda.js'
+import type { PackedLayer } from '../packLayer.js'
 import { LambdaLogGroup } from '../resources/LambdaLogGroup.js'
 import { STACK_NAME } from './stackName.js'
 
@@ -26,7 +30,7 @@ export class MemfaultIntegrationStack extends Stack {
 		const baseLayer = new Lambda.LayerVersion(this, 'baseLayer', {
 			code: Lambda.Code.fromAsset(layer.layerZipFile),
 			compatibleArchitectures: [Lambda.Architecture.ARM_64],
-			compatibleRuntimes: [Lambda.Runtime.NODEJS_14_X],
+			compatibleRuntimes: [Lambda.Runtime.NODEJS_16_X],
 		})
 
 		const readSSMParametersPermission = new IAM.PolicyStatement({
@@ -41,7 +45,7 @@ export class MemfaultIntegrationStack extends Stack {
 		const publishChunks = new Lambda.Function(this, 'publishChunks', {
 			handler: lambdaSources.publishChunks.handler,
 			architecture: Lambda.Architecture.ARM_64,
-			runtime: Lambda.Runtime.NODEJS_14_X,
+			runtime: Lambda.Runtime.NODEJS_16_X,
 			timeout: Duration.minutes(1),
 			memorySize: 1792,
 			code: Lambda.Code.fromAsset(lambdaSources.publishChunks.lambdaZipFile),
@@ -110,7 +114,7 @@ export class MemfaultIntegrationStack extends Stack {
 		const publishDeviceInfo = new Lambda.Function(this, 'publishDeviceInfo', {
 			handler: lambdaSources.publishDeviceInfoHandler.handler,
 			architecture: Lambda.Architecture.ARM_64,
-			runtime: Lambda.Runtime.NODEJS_14_X,
+			runtime: Lambda.Runtime.NODEJS_16_X,
 			timeout: Duration.minutes(1),
 			memorySize: 1792,
 			code: Lambda.Code.fromAsset(

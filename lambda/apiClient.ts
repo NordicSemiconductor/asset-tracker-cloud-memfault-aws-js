@@ -12,6 +12,7 @@ export const apiRequest = async (
 	const { method, path } = options
 	console.debug({
 		method,
+		hostname: options.hostname,
 		path,
 		payload,
 	})

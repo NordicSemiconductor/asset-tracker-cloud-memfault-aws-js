@@ -11,6 +11,13 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  AWS_REGION: eu-west-1
+  AWS_DEFAULT_REGION: eu-west-1
+  AWS_ROLE: arn:aws:iam::127234870185:role/github-actions
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   e2e-tests:
@@ -20,21 +27,27 @@ jobs:
 
     timeout-minutes: 10
 
-    environment:
-      name: ci
-
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: eu-west-1
-      AWS_DEFAULT_REGION: eu-west-1
-
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+
+      - name: Keep npm cache around to speed up installs
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: build-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
+      - name: Check TypeScript
+        run: npx tsc
+
+      - name: Run Unit Tests
+        run: npm test
 
       - name: Cache AWS CLI (Linux)
         id: cache-aws-cli
@@ -50,14 +63,12 @@ jobs:
           unzip -q awscliv2.zip
           sudo ./aws/install --update
 
-      - name: Keep npm cache around to speed up installs
-        uses: actions/cache@v3
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          path: ~/.npm
-          key: build-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install dependencies
-        run: npm ci --no-audit
+          role-to-assume: ${{ env.AWS_ROLE }}
+          role-session-name: memfault-aws
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Generate Stack ID
         run: |
@@ -68,20 +79,53 @@ jobs:
 
       - run: echo "VERSION=${{ github.sha }}" >> $GITHUB_ENV
 
-      - name: Deploy stack
-        env:
-          IS_TEST: 1
+      - name: Bootstrap AWS account for CDK
+        run: |
+          npx cdk bootstrap aws://`aws sts get-caller-identity | jq -r '.Account' | tr -d '\n'`/${{ env.AWS_REGION }}
+
+      - name: Deploy solution stack
         run: npx cdk deploy --require-approval never
+
+      - name: Configure Memfault SSM parameters
+        run: |
+          aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/projectKey --value my-projectKey
+          aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/organization --value my-org
+          aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/project --value my-project
+          aws ssm put-parameter --type String --name /${STACK_NAME}/thirdParty/memfault/authToken --value my-authToken
+
+      - name: Deploy test stack
+        run: |
+          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' deploy --require-approval never
+
+      - name: Set endpoint to mock API
+        run: |
+          mkdir ~/.aws
+          # Disable URL lookups
+          echo "[default]\ncli_follow_urlparam = false" > ~/.aws/config
+          MOCK_HTTP_API_ENDPOINT=`aws cloudformation describe-stacks --stack-name ${STACK_NAME}-test | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "apiURL") | .OutputValue' | sed -E 's/\/$//g'`
+          echo $MOCK_HTTP_API_ENDPOINT
+          aws ssm put-parameter  --type String --name /${STACK_NAME}/thirdParty/memfault/apiEndpoint --value $MOCK_HTTP_API_ENDPOINT/api.memfault.com
+          aws ssm put-parameter  --type String --name /${STACK_NAME}/thirdParty/memfault/chunksEndpoint --value $MOCK_HTTP_API_ENDPOINT/chunks.memfault.com
+
+      - name: Run End-to-End Tests
+        run: npm run test:e2e
 
       - name: Clean up End-to-End test resources
         if: always()
-        run: npx cdk destroy -f '*'
+        run: |
+          npx cdk -a 'node --unhandled-rejections=strict dist/cdk/test-resources.js' destroy -f
+
+      - name: Destroy solution stack
+        run: npx cdk destroy -f
 
   release:
     needs:
       - e2e-tests
+
     runs-on: ubuntu-latest
+
     if: github.ref == 'refs/heads/saga'
+
     steps:
       - uses: actions/checkout@v3
 
