@@ -10,15 +10,11 @@ on:
         default: "no"
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GH_WRITE_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   AWS_REGION: eu-west-1
   AWS_DEFAULT_REGION: eu-west-1
   AWS_ROLE: arn:aws:iam::127234870185:role/github-actions
-
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
   e2e-tests:

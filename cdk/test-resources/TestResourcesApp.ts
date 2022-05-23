@@ -11,6 +11,7 @@ export class TestResources extends App {
 	}: {
 		lambdaSources: {
 			httpApiMock: PackedLambda
+			policyCleanup: PackedLambda
 		}
 		layer: PackedLayer
 		context?: Record<string, any>

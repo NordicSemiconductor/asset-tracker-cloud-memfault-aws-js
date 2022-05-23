@@ -17,6 +17,7 @@ export class TestResourcesStack extends Stack {
 		}: {
 			lambdaSources: {
 				httpApiMock: PackedLambda
+				policyCleanup: PackedLambda
 			}
 			layer: PackedLayer
 		},
@@ -27,7 +28,10 @@ export class TestResourcesStack extends Stack {
 			lambdaSources,
 			layer,
 		})
-		const iot = new Iot(this)
+		const iot = new Iot(this, {
+			lambdaSources,
+			layer,
+		})
 
 		// Export these so the test runner can use them
 		new CfnOutput(this, 'apiURL', {

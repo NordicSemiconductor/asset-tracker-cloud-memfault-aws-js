@@ -1,9 +1,23 @@
 import { aws_iot as IoT, Resource } from 'aws-cdk-lib'
+import type { PackedLambda } from 'cdk/packLambda'
+import type { PackedLayer } from 'cdk/packLayer'
 import type { Construct } from 'constructs'
+import { PolicyCleanup } from './PolicyCleanup.js'
 
 export class Iot extends Resource {
 	public readonly policy: IoT.CfnPolicy
-	public constructor(parent: Construct) {
+	public constructor(
+		parent: Construct,
+		{
+			lambdaSources,
+			layer,
+		}: {
+			lambdaSources: {
+				policyCleanup: PackedLambda
+			}
+			layer: PackedLayer
+		},
+	) {
 		super(parent, 'test-thing')
 
 		this.policy = new IoT.CfnPolicy(this, 'policy', {
@@ -43,6 +57,12 @@ export class Iot extends Resource {
 					},
 				],
 			},
+		})
+
+		new PolicyCleanup(this, {
+			policy: this.policy,
+			lambdaSources,
+			layer,
 		})
 	}
 }

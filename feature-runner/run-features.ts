@@ -103,7 +103,7 @@ program
 			try {
 				const { success } = await runner
 					.addStepRunners(storageStepRunners())
-					.addStepRunners(deviceSteps.steps)
+					.addStepRunners(deviceSteps)
 					.addStepRunners(
 						restStepRunners({
 							client: new RestClient({
@@ -152,10 +152,6 @@ program
 						}),
 					)
 					.run()
-
-				// Cleanup
-				console.error(chalk.yellow('Cleaning up ...'))
-				await Promise.all([deviceSteps.cleanup()])
 
 				if (!success) {
 					process.exit(1)
