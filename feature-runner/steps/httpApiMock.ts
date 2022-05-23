@@ -9,6 +9,7 @@ import {
 	regexGroupMatcher,
 	StepRunnerFunc,
 } from '@nordicsemiconductor/e2e-bdd-test-runner'
+import backoff from 'backoff'
 import * as chai from 'chai'
 import { expect } from 'chai'
 import chaiSubset from 'chai-subset'
@@ -72,54 +73,100 @@ export const httpApiMockStepRunners = ({
 			expectedHeaders = headers
 		}
 
-		const res = await db.send(
-			new QueryCommand({
-				TableName: runner.world['httpApiMock:requestsTableName'],
-				KeyConditionExpression: 'methodPathQuery = :methodPathQuery',
-				ExpressionAttributeValues: {
-					[':methodPathQuery']: {
-						S: `${method} ${path}`,
-					},
-				},
-				ExpressionAttributeNames: {
-					'#timestamp': 'timestamp',
-				},
-				ProjectionExpression: 'methodPathQuery,body,#timestamp,headers',
-				Limit: 1000,
-			}),
-		)
-		const { Items } = res
-		if (Items === undefined) throw new Error('No requests found!')
-		for (const request of Items) {
-			try {
-				if (expectedBody !== undefined) {
-					if (isBinaryBody) {
-						expect(
-							Buffer.from(request.body?.S ?? '', 'base64').toString('utf-8'),
-						).to.equal(expectedBody)
-					} else {
-						const actual = JSON.parse(request.body?.S ?? '{}')
-						expect(actual).to.deep.equal(expectedBody)
-					}
-				}
-				if (expectedHeaders !== undefined) {
-					const actual = JSON.parse(request.headers?.S ?? '{}')
-					expect(actual).to.containSubset(expectedHeaders)
-				}
-				await db.send(
-					new DeleteItemCommand({
+		await new Promise<void>((resolve, reject) => {
+			const fetchRequestsBackoff = backoff.exponential({
+				initialDelay: 500,
+				maxDelay: 5000,
+			})
+			fetchRequestsBackoff.failAfter(10)
+			fetchRequestsBackoff.on('ready', async () => {
+				try {
+					const request = await tryRequest({
+						db,
 						TableName: runner.world['httpApiMock:requestsTableName'],
-						Key: {
-							methodPathQuery: request.methodPathQuery,
-							timestamp: request.timestamp,
-						},
-					}),
-				)
-				return
-			} catch {
-				// Ignore this, there could be multiple requests that do not match
-			}
-		}
-		throw new Error('No requests matched.')
+						method,
+						path,
+						isBinaryBody,
+						expectedBody,
+						expectedHeaders,
+					})
+					return resolve()
+				} catch {
+					fetchRequestsBackoff.backoff()
+				}
+			})
+			fetchRequestsBackoff.on('fail', () =>
+				reject(new Error('Timed out waiting for requests...')),
+			)
+			fetchRequestsBackoff.backoff()
+		})
 	}),
 ]
+
+const tryRequest = async ({
+	db,
+	TableName,
+	method,
+	path,
+	isBinaryBody,
+	expectedBody,
+	expectedHeaders,
+}: {
+	db: DynamoDBClient
+	TableName: string
+	method: string
+	path: string
+	isBinaryBody: boolean
+	expectedBody?: string | Record<string, string>
+	expectedHeaders?: Record<string, string>
+}) => {
+	const res = await db.send(
+		new QueryCommand({
+			TableName,
+			KeyConditionExpression: 'methodPathQuery = :methodPathQuery',
+			ExpressionAttributeValues: {
+				[':methodPathQuery']: {
+					S: `${method} ${path}`,
+				},
+			},
+			ExpressionAttributeNames: {
+				'#timestamp': 'timestamp',
+			},
+			ProjectionExpression: 'methodPathQuery,body,#timestamp,headers',
+			Limit: 1000,
+		}),
+	)
+	const { Items } = res
+	if (Items === undefined) throw new Error('No requests found!')
+	for (const request of Items) {
+		try {
+			if (expectedBody !== undefined) {
+				if (isBinaryBody) {
+					expect(
+						Buffer.from(request.body?.S ?? '', 'base64').toString('utf-8'),
+					).to.equal(expectedBody)
+				} else {
+					const actual = JSON.parse(request.body?.S ?? '{}')
+					expect(actual).to.deep.equal(expectedBody)
+				}
+			}
+			if (expectedHeaders !== undefined) {
+				const actual = JSON.parse(request.headers?.S ?? '{}')
+				expect(actual).to.containSubset(expectedHeaders)
+			}
+			await db.send(
+				new DeleteItemCommand({
+					TableName,
+					Key: {
+						methodPathQuery: request.methodPathQuery,
+						timestamp: request.timestamp,
+					},
+				}),
+			)
+			return
+		} catch {
+			// Ignore this, there could be multiple requests that do not match
+		}
+	}
+	throw new Error('No requests matched.')
+}
