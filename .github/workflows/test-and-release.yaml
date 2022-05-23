@@ -3,6 +3,7 @@ name: Test and Release
 permissions:
   id-token: write
   contents: write
+  issues: write
 
 on:
   push:
