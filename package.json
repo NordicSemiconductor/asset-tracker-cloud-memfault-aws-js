@@ -32,7 +32,7 @@
     "@aws-sdk/client-cloudformation": "3.95.0",
     "@aws-sdk/client-dynamodb": "3.95.0",
     "@aws-sdk/client-iot": "3.95.0",
-    "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.72",
+    "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.74",
     "@nordicsemiconductor/cloudformation-helpers": "7.0.6",
     "@nordicsemiconductor/e2e-bdd-test-runner": "15.1.4",
     "@nordicsemiconductor/object-to-env": "4.1.1",
