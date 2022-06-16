@@ -58,7 +58,7 @@
     "chokidar": "3.5.3",
     "constructs": "10.1.42",
     "dependency-tree": "8.1.2",
-    "esbuild": "0.14.43",
+    "esbuild": "0.14.44",
     "glob": "8.0.3",
     "jest": "28.1.1",
     "regenerator-runtime": "0.13.9",
