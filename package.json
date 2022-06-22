@@ -34,7 +34,7 @@
     "@aws-sdk/client-iot": "3.112.0",
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.91",
     "@nordicsemiconductor/cloudformation-helpers": "7.0.6",
-    "@nordicsemiconductor/e2e-bdd-test-runner": "15.1.28",
+    "@nordicsemiconductor/e2e-bdd-test-runner": "15.1.29",
     "@nordicsemiconductor/object-to-env": "4.1.1",
     "@swc/cli": "0.1.57",
     "@swc/core": "1.2.204",
