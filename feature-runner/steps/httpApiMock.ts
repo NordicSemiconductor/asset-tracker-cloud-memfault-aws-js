@@ -81,7 +81,7 @@ export const httpApiMockStepRunners = ({
 			fetchRequestsBackoff.failAfter(10)
 			fetchRequestsBackoff.on('ready', async () => {
 				try {
-					const request = await tryRequest({
+					await tryRequest({
 						db,
 						TableName: runner.world['httpApiMock:requestsTableName'],
 						method,
