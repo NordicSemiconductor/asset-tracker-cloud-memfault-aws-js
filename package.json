@@ -4,9 +4,7 @@
   "description": "Memfault integration for AWS IoT developed using AWS CDK in TypeScript.",
   "type": "module",
   "scripts": {
-    "postinstall": "husky install && check-node-version --package && npm run compile",
-    "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable",
+    "prepare": "husky install && check-node-version --package && npm run compile",
     "compile": "swc ./cdk -d dist/cdk && swc ./feature-runner -d dist/feature-runner",
     "test": "jest",
     "test:e2e": "node --unhandled-rejections=strict dist/feature-runner/run-features.js ./features --print-results --progress"
