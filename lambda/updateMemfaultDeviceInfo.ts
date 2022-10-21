@@ -26,7 +26,7 @@ export const updateMemfaultDeviceInfo =
 	}): Promise<ReturnType<typeof apiRequest>> => {
 		const payload = JSON.stringify(update)
 		const endpoint = new URL(apiEndpoint ?? 'https://api.memfault.com')
-		const base = (endpoint.pathname ?? '').replace(/\+$/, '')
+		const base = (endpoint.pathname ?? '').replace(/\/+$/, '')
 		return apiRequest(
 			{
 				hostname: endpoint.hostname,
