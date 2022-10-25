@@ -27,9 +27,9 @@
   "author": "Nordic Semiconductor ASA | nordicsemi.no",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "@aws-sdk/client-cloudformation": "3.194.0",
-    "@aws-sdk/client-dynamodb": "3.195.0",
-    "@aws-sdk/client-iot": "3.194.0",
+    "@aws-sdk/client-cloudformation": "3.196.0",
+    "@aws-sdk/client-dynamodb": "3.196.0",
+    "@aws-sdk/client-iot": "3.196.0",
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.134",
     "@nordicsemiconductor/cloudformation-helpers": "7.0.6",
     "@nordicsemiconductor/e2e-bdd-test-runner": "15.1.135",
@@ -89,7 +89,7 @@
   },
   "prettier": "@nordicsemiconductor/asset-tracker-cloud-code-style/.prettierrc",
   "dependencies": {
-    "@aws-sdk/client-ssm": "3.195.0"
+    "@aws-sdk/client-ssm": "3.196.0"
   },
   "jest": {
     "transform": {
