@@ -16,7 +16,7 @@ import {
 } from '@nordicsemiconductor/e2e-bdd-test-runner'
 import * as chai from 'chai'
 import chaiSubset from 'chai-subset'
-import { v4 } from 'uuid'
+import { randomUUID } from 'node:crypto'
 import type { MemfaultIntegrationWorld } from '../run-features.js'
 import { awsIotDeviceConnection } from './awsIotDeviceConnection.js'
 chai.use(chaiSubset)
@@ -42,7 +42,7 @@ export const iotStepRunners = ({
 			let thingName = runner.store['deviceId']
 			if (thingName === undefined) {
 				const { thingPolicyName } = runner.world
-				thingName = v4()
+				thingName = randomUUID()
 
 				await iot.send(
 					new CreateThingCommand({
