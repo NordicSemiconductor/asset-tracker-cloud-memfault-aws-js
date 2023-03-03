@@ -29,7 +29,7 @@
   "devDependencies": {
     "@aws-sdk/client-cloudformation": "3.282.0",
     "@aws-sdk/client-dynamodb": "3.282.0",
-    "@aws-sdk/client-iot": "3.282.0",
+    "@aws-sdk/client-iot": "3.283.0",
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.183",
     "@nordicsemiconductor/cloudformation-helpers": "7.0.7",
     "@nordicsemiconductor/e2e-bdd-test-runner": "15.1.250",
