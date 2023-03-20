@@ -5,9 +5,9 @@ import {
 	QueryCommand,
 } from '@aws-sdk/client-dynamodb'
 import {
-	InterpolatedStep,
 	regexGroupMatcher,
-	StepRunnerFunc,
+	type InterpolatedStep,
+	type StepRunnerFunc,
 } from '@nordicsemiconductor/e2e-bdd-test-runner'
 import backoff from 'backoff'
 import * as chai from 'chai'

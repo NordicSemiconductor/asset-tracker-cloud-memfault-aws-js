@@ -53,7 +53,7 @@ export const handler = async ({
 	if (
 		hardware_version !== undefined &&
 		(res.headers['content-type']?.includes('application/json') ?? false) &&
-		(res.headers['content-length'] ?? 0) > 0
+		parseInt(res.headers['content-length'] ?? '0', 10) > 0
 	) {
 		let errorInfo: Record<string, any> | undefined = undefined
 		try {
