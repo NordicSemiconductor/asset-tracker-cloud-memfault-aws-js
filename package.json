@@ -60,7 +60,7 @@
     "glob": "8.1.0",
     "jest": "29.5.0",
     "regenerator-runtime": "0.13.11",
-    "typescript": "5.0.2",
+    "typescript": "5.0.3",
     "yazl": "2.5.1"
   },
   "lint-staged": {
