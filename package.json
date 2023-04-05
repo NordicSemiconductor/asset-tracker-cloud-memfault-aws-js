@@ -57,7 +57,7 @@
     "constructs": "10.1.302",
     "dependency-tree": "9.0.0",
     "esbuild": "0.17.15",
-    "glob": "8.1.0",
+    "glob": "9.3.4",
     "jest": "29.5.0",
     "regenerator-runtime": "0.13.11",
     "typescript": "5.0.3",
