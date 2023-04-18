@@ -1,9 +1,9 @@
 import {
 	aws_apigateway as ApiGateway,
+	Duration,
 	aws_dynamodb as DynamoDB,
 	aws_iam as IAM,
 	aws_lambda as Lambda,
-	Duration,
 	RemovalPolicy,
 	Resource,
 } from 'aws-cdk-lib'

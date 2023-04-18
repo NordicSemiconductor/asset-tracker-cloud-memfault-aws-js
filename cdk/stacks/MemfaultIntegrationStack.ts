@@ -1,9 +1,9 @@
 import {
 	App,
+	Duration,
 	aws_iam as IAM,
 	aws_iot as IoT,
 	aws_lambda as Lambda,
-	Duration,
 	Stack,
 } from 'aws-cdk-lib'
 import type { PackedLambda } from '../packLambda.js'

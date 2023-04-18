@@ -1,7 +1,7 @@
 import {
-	aws_lambda as Lambda,
 	CustomResource,
 	Duration,
+	aws_lambda as Lambda,
 	Resource,
 } from 'aws-cdk-lib'
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
