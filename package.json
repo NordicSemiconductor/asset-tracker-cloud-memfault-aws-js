@@ -95,7 +95,7 @@
   },
   "prettier": "@nordicsemiconductor/asset-tracker-cloud-code-style/.prettierrc",
   "dependencies": {
-    "@aws-sdk/client-ssm": "3.360.0"
+    "@aws-sdk/client-ssm": "3.361.0"
   },
   "jest": {
     "transform": {
