@@ -54,7 +54,7 @@
     "chalk": "5.3.0",
     "check-node-version": "4.2.1",
     "chokidar": "3.5.3",
-    "constructs": "10.2.69",
+    "constructs": "10.2.70",
     "dependency-tree": "10.0.9",
     "esbuild": "0.19.2",
     "glob": "8.1.0",
