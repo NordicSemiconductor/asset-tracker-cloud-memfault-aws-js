@@ -44,7 +44,7 @@
     "@types/glob": "8.1.0",
     "@types/jest": "29.5.5",
     "@types/node": "18.17.19",
-    "@types/yazl": "2.4.2",
+    "@types/yazl": "2.4.3",
     "aws-cdk-lib": "2.97.0",
     "aws-iot-device-sdk": "2.2.12",
     "backoff": "2.5.0",
