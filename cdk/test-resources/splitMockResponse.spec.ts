@@ -1,19 +1,21 @@
 import { splitMockResponse } from './splitMockResponse.js'
-
-describe('split mock response', () => {
-	it('should parse headers and body', () =>
-		expect(
+import { describe, it } from 'node:test'
+import assert from 'node:assert'
+void describe('split mock response', () => {
+	void it('should parse headers and body', () =>
+		assert.deepEqual(
 			splitMockResponse(
 				`Memfault-Project-Key: my-projectKey
 				Content-Type: application/octet-stream
 
 				<chunk data>`,
 			),
-		).toMatchObject({
-			headers: {
-				'Memfault-Project-Key': 'my-projectKey',
-				'Content-Type': 'application/octet-stream',
+			{
+				headers: {
+					'Memfault-Project-Key': 'my-projectKey',
+					'Content-Type': 'application/octet-stream',
+				},
+				body: '<chunk data>',
 			},
-			body: '<chunk data>',
-		}))
+		))
 })
