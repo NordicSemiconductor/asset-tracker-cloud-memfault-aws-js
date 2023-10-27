@@ -47,7 +47,7 @@
     "@types/yazl": "2.4.4",
     "@typescript-eslint/eslint-plugin": "6.9.0",
     "aws-cdk-lib": "2.103.1",
-    "aws-iot-device-sdk": "2.2.12",
+    "aws-iot-device-sdk": "2.2.13",
     "backoff": "2.5.0",
     "cdk": "2.103.1",
     "chai": "4.3.10",
