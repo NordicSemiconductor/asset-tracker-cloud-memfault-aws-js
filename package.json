@@ -64,7 +64,7 @@
     "eslint-plugin-unicorn": "49.0.0",
     "glob": "10.3.10",
     "regenerator-runtime": "0.14.0",
-    "tsx": "3.14.0",
+    "tsx": "4.0.0",
     "typescript": "5.2.2",
     "yazl": "2.5.1"
   },
