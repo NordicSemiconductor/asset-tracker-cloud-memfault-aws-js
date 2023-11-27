@@ -57,7 +57,7 @@
     "chokidar": "3.5.3",
     "constructs": "10.3.0",
     "dependency-tree": "10.0.9",
-    "esbuild": "0.19.7",
+    "esbuild": "0.19.8",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-import": "2.29.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
