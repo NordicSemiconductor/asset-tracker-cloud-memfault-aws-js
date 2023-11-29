@@ -23,7 +23,7 @@ const { eventConfigurations } = await iot.send(
 )
 
 let thingEvents = '0'
-if (!(eventConfigurations?.THING.Enabled ?? false)) {
+if (!(eventConfigurations?.THING?.Enabled ?? false)) {
 	console.debug('')
 	;[
 		`THING events are disabled for your IoT hub.`,
