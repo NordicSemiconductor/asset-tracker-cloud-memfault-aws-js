@@ -27,7 +27,7 @@
   "author": "Nordic Semiconductor ASA | nordicsemi.no",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "@aws-sdk/client-cloudformation": "3.465.0",
+    "@aws-sdk/client-cloudformation": "3.466.0",
     "@aws-sdk/client-dynamodb": "3.465.0",
     "@aws-sdk/client-iot": "3.465.0",
     "@commitlint/config-conventional": "18.4.3",
