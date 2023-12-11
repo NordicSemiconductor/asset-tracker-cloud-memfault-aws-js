@@ -23,7 +23,7 @@ export const handler = async (
 		event.queryStringParameters !== undefined
 			? `?${new URLSearchParams(
 					event.queryStringParameters as Record<string, string>,
-			  ).toString()}`
+				).toString()}`
 			: ''
 	}`
 
@@ -98,7 +98,7 @@ export const handler = async (
 				? {
 						...headers,
 						'Content-Type': 'application/octet-stream',
-				  }
+					}
 				: headers,
 			body: isBinary
 				? /* body is HEX encoded */ Buffer.from(body, 'hex').toString('base64')

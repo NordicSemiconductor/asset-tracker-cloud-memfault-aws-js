@@ -8,8 +8,8 @@ export const getConfigFromSSM =
 			[K in keyof ConfigShape]: ConfigShape[K] extends true
 				? string
 				: ConfigShape[K] extends false
-				  ? string | undefined
-				  : never
+					? string | undefined
+					: never
 		},
 	>(
 		properties: ConfigShape,
