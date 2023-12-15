@@ -63,7 +63,7 @@
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-unicorn": "49.0.0",
     "glob": "10.3.10",
-    "regenerator-runtime": "0.14.0",
+    "regenerator-runtime": "0.14.1",
     "tsx": "4.6.2",
     "typescript": "5.3.3",
     "yazl": "2.5.1"
