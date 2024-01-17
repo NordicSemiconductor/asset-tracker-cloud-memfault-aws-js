@@ -28,7 +28,7 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@aws-sdk/client-cloudformation": "3.490.0",
-    "@aws-sdk/client-dynamodb": "3.490.0",
+    "@aws-sdk/client-dynamodb": "3.494.0",
     "@aws-sdk/client-iot": "3.493.0",
     "@commitlint/config-conventional": "18.4.4",
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "13.1.8",
