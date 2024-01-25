@@ -31,7 +31,7 @@
     "@aws-sdk/client-dynamodb": "3.499.0",
     "@aws-sdk/client-iot": "3.499.0",
     "@commitlint/config-conventional": "18.5.0",
-    "@nordicsemiconductor/asset-tracker-cloud-code-style": "13.1.11",
+    "@nordicsemiconductor/asset-tracker-cloud-code-style": "13.1.12",
     "@nordicsemiconductor/cloudformation-helpers": "9.0.2",
     "@nordicsemiconductor/e2e-bdd-test-runner": "17.0.1",
     "@nordicsemiconductor/eslint-config-asset-tracker-cloud-typescript": "17.0.0",
