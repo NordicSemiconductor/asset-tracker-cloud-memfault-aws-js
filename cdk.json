@@ -1,3 +1,0 @@
-{
-  "app": "node --unhandled-rejections=strict dist/cdk/memfault-integration.js"
-}
