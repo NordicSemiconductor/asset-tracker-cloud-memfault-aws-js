@@ -4,7 +4,7 @@
   "description": "Memfault integration for AWS IoT developed using AWS CDK in TypeScript.",
   "type": "module",
   "scripts": {
-    "prepare": "husky install && check-node-version --package && npm run compile",
+    "prepare": "husky && check-node-version --package && npm run compile",
     "compile": "swc ./cdk -d dist/cdk && swc ./feature-runner -d dist/feature-runner",
     "test": "tsx --no-warnings --test ./cdk/test-resources/*.spec.ts",
     "test:e2e": "node --unhandled-rejections=strict dist/feature-runner/run-features.js ./features --print-results --progress"
@@ -63,6 +63,7 @@
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-unicorn": "50.0.1",
     "glob": "10.3.10",
+    "husky": "9.0.7",
     "regenerator-runtime": "0.14.1",
     "tsx": "4.7.0",
     "typescript": "5.3.3",
