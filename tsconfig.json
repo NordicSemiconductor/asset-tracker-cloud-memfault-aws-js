@@ -13,7 +13,7 @@
     "jsx": "preserve",
     "noFallthroughCasesInSwitch": true,
     "verbatimModuleSyntax": true,
-    "baseUrl": ".",
+    "baseUrl": "."
   },
-  "include": ["cdk", "lambda", "feature-runner"],
+  "include": ["cdk", "lambda", "feature-runner"]
 }
