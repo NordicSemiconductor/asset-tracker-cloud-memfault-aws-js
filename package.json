@@ -30,7 +30,7 @@
     "@aws-sdk/client-cloudformation": "3.511.0",
     "@aws-sdk/client-dynamodb": "3.511.0",
     "@aws-sdk/client-iot": "3.511.0",
-    "@commitlint/config-conventional": "18.6.0",
+    "@commitlint/config-conventional": "18.6.1",
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "13.1.15",
     "@nordicsemiconductor/cloudformation-helpers": "9.0.2",
     "@nordicsemiconductor/e2e-bdd-test-runner": "17.0.1",
