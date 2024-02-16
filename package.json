@@ -99,7 +99,7 @@
       ]
     ]
   },
-  "prettier": "@nordicsemiconductor/asset-tracker-cloud-code-style/.prettierrc",
+  "prettier": "@bifravst/prettier-config",
   "dependencies": {
     "@aws-sdk/client-ssm": "3.515.0"
   }
