@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "prepare": "husky && check-node-version --package && npm run compile",
-    "compile": "swc ./cdk -d dist/cdk && swc ./feature-runner -d dist/feature-runner",
+    "compile": "swc --strip-leading-paths ./cdk -d dist/cdk && swc --strip-leading-paths ./feature-runner -d dist/feature-runner",
     "test": "tsx --no-warnings --test ./cdk/test-resources/*.spec.ts",
     "test:e2e": "node --unhandled-rejections=strict dist/feature-runner/run-features.js ./features --print-results --progress"
   },
@@ -36,7 +36,7 @@
     "@nordicsemiconductor/cloudformation-helpers": "9.0.3",
     "@nordicsemiconductor/e2e-bdd-test-runner": "17.0.1",
     "@nordicsemiconductor/object-to-env": "7.0.7",
-    "@swc/cli": "0.2.0",
+    "@swc/cli": "0.3.9",
     "@swc/core": "1.4.2",
     "@types/aws-iot-device-sdk": "2.2.8",
     "@types/aws-lambda": "8.10.134",
