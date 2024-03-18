@@ -1,6 +1,6 @@
 import { aws_iot as IoT, Resource } from 'aws-cdk-lib'
-import type { PackedLambda } from 'cdk/packLambda'
-import type { PackedLayer } from 'cdk/packLayer'
+import type { PackedLambda } from 'cdk/packLambda.js'
+import type { PackedLayer } from 'cdk/packLayer.js'
 import type { Construct } from 'constructs'
 import { PolicyCleanup } from './PolicyCleanup.js'
 
