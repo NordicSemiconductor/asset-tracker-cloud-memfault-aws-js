@@ -57,7 +57,7 @@
     "constructs": "10.3.0",
     "dependency-tree": "11.0.1",
     "esbuild": "0.21.1",
-    "glob": "10.3.12",
+    "glob": "10.3.14",
     "husky": "9.0.11",
     "regenerator-runtime": "0.14.1",
     "tsx": "4.9.3",
