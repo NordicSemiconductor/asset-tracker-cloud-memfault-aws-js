@@ -1,4 +1,5 @@
-import { App, CfnOutput, Stack } from 'aws-cdk-lib'
+import type { App } from 'aws-cdk-lib'
+import { CfnOutput, Stack } from 'aws-cdk-lib'
 import type { PackedLambda } from '../packLambda.js'
 import type { PackedLayer } from '../packLayer.js'
 import { TEST_RESOURCES_STACK_NAME } from '../stacks/stackName.js'

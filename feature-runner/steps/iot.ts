@@ -1,9 +1,9 @@
+import type { IoTClient } from '@aws-sdk/client-iot'
 import {
 	AttachPolicyCommand,
 	AttachThingPrincipalCommand,
 	CreateKeysAndCertificateCommand,
 	CreateThingCommand,
-	IoTClient,
 	UpdateThingCommand,
 } from '@aws-sdk/client-iot'
 import type {

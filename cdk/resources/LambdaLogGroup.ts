@@ -1,6 +1,6 @@
+import type { aws_lambda as Lambda } from 'aws-cdk-lib'
 import {
 	aws_logs as CloudWatchLogs,
-	aws_lambda as Lambda,
 	RemovalPolicy,
 	Resource,
 } from 'aws-cdk-lib'
