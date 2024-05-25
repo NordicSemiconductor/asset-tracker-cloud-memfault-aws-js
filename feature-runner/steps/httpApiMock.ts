@@ -1,6 +1,6 @@
+import type { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
 	DeleteItemCommand,
-	DynamoDBClient,
 	PutItemCommand,
 	QueryCommand,
 } from '@aws-sdk/client-dynamodb'

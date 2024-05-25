@@ -1,5 +1,5 @@
+import type { App } from 'aws-cdk-lib'
 import {
-	App,
 	Duration,
 	aws_iam as IAM,
 	aws_iot as IoT,
