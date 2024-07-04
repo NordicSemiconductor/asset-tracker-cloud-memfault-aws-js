@@ -46,7 +46,7 @@
     "@types/node": "20.14.9",
     "@types/yazl": "2.4.5",
     "aws-cdk-lib": "2.147.3",
-    "aws-iot-device-sdk": "2.2.14",
+    "aws-iot-device-sdk": "2.2.15",
     "backoff": "2.5.0",
     "cdk": "2.147.3",
     "chai": "5.1.1",
